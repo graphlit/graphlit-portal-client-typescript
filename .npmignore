@@ -1,0 +1,11 @@
+src/
+test/
+examples/
+*.log
+.DS_Store
+.env
+.env.local
+tsconfig.json
+codegen.yml
+.git/
+.github/

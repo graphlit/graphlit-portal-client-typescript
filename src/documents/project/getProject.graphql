@@ -1,0 +1,19 @@
+query GetProject($id: ID!) {
+  project(id: $id) {
+    id
+    name
+    description
+    state
+    platform
+    region
+    uri
+    creationDate
+    modifiedDate
+    owner {
+      id
+    }
+    quota {
+      credits
+    }
+  }
+}

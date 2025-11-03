@@ -1,0 +1,60 @@
+{
+  "name": "graphlit-portal-client",
+  "version": "0.1.0",
+  "description": "Graphlit Portal API Client for TypeScript - Infrastructure and organization management",
+  "type": "module",
+  "main": "./dist/client.js",
+  "types": "./dist/client.d.ts",
+  "exports": {
+    ".": "./dist/client.js",
+    "./generated/*": "./dist/generated/*.js",
+    "./dist/generated/*": "./dist/generated/*.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphlit/graphlit-portal-client-typescript.git"
+  },
+  "contributors": [
+    "Kirk Marple (https://github.com/kirk-marple)"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "generate": "graphql-codegen --config codegen.yml",
+    "format": "prettier --write .",
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build",
+    "test": "vitest run --config test/vitest.config.ts",
+    "test:watch": "vitest --config test/vitest.config.ts",
+    "test:coverage": "vitest run --coverage --config test/vitest.config.ts"
+  },
+  "keywords": [
+    "Graphlit",
+    "API",
+    "Portal",
+    "Control Plane",
+    "Infrastructure",
+    "DevOps"
+  ],
+  "author": "Unstruk Data Inc.",
+  "license": "MIT",
+  "dependencies": {
+    "@apollo/client": "^3.13.8",
+    "@graphql-codegen/cli": "^5.0.7",
+    "@graphql-codegen/typescript": "^4.1.6",
+    "@graphql-codegen/typescript-operations": "^4.6.1",
+    "graphql": "^16.11.0",
+    "prettier": "^3.5.3"
+  },
+  "devDependencies": {
+    "@graphql-codegen/typescript-document-nodes": "^4.0.16",
+    "@types/node": "^20.0.0",
+    "dotenv": "^16.5.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.3"
+  }
+}

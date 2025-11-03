@@ -1,0 +1,1132 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"Response when creating an API key. Token is only shown once!"
+type ApiKeyCreated {
+  "Unique identifier for this API key."
+  id: String
+  "User-provided name for the API key."
+  name: String
+  "The plaintext API key. This is the ONLY time you will see this value!"
+  token: String
+  "When the API key was created."
+  createdAt: DateTime
+}
+
+"Metadata about an API key (does not include token)."
+type ApiKeyMetadata {
+  "Unique identifier for this API key."
+  id: String
+  "User-provided name for the API key."
+  name: String
+  "When the API key was created."
+  createdAt: DateTime
+  "When the API key was last used (null if never used)."
+  lastUsedAt: DateTime
+  "Last 4 characters for identification."
+  lastFourChars: String
+}
+
+"Represents a boolean result."
+type BooleanResult {
+  "The boolean result."
+  result: Boolean
+}
+
+"Represents an entity reference."
+type EntityReference {
+  "The ID of the entity."
+  id: ID!
+}
+
+"Represents an environment."
+type Environment {
+  "The ID of the environment."
+  id: ID!
+  "The name of the environment."
+  name: String!
+  "The owner of the environment."
+  owner: Owner!
+  "The state of the environment (i.e. created, finished)."
+  state: EntityState!
+  "The relevance score of the environment."
+  relevance: Float
+  "The creation date of the environment."
+  creationDate: DateTime!
+  "The modified date of the environment."
+  modifiedDate: DateTime
+  "The URI to access the environment's Data API."
+  uri: String
+  "The type of environment (development, production)."
+  type: EnvironmentTypes
+  "The cloud platform (Azure, AWS, GCP) where environment was provisioned."
+  platform: ResourceConnectorTypes
+  "The cloud platform region where environment was provisioned."
+  region: String
+  "The secret for signing JWTs for the Data API."
+  jwtSecret: String
+}
+
+"Represents an environment token."
+type EnvironmentToken {
+  "The token associated with the environment."
+  token: String
+}
+
+"Represents an invoice."
+type Invoice {
+  "The invoice status."
+  status: InvoiceStatus
+  "The invoice identifier."
+  identifier: String
+  "The invoice description."
+  description: String
+  "The invoice period start date."
+  periodStartDate: Date
+  "The invoice period end date."
+  periodEndDate: Date
+  "The invoice PDF URI."
+  uri: URL
+  "The invoice number."
+  number: String
+  "The invoice amount due, in cents."
+  amountDue: Long
+  "The invoice amount paid, in cents."
+  amountPaid: Long
+  "The invoice currency."
+  currency: String
+  "The invoice line items."
+  lines: [InvoiceLineItem!]
+}
+
+"Represents an invoice line item."
+type InvoiceLineItem {
+  "The invoice line item description."
+  description: String
+  "The invoice line item identifier."
+  identifier: String
+  "The invoice line item amount, in cents."
+  amount: Long
+  "The invoice line item currency."
+  currency: String
+  "The invoice line item quantity."
+  quantity: Long
+  "The invoice line item unit amount, in cents."
+  unitAmount: Long
+  "If the invoice line item is a prorated amount."
+  proration: Boolean
+  "The product name."
+  productName: String
+  "The price billing scheme."
+  billingScheme: BillingSchemes
+  "The price usage type."
+  usageType: UsageTypes
+  "The price aggregate usage type."
+  aggregateUsageType: AggregateUsageTypes
+  "The invoice line item start date."
+  periodStartDate: Date
+  "The invoice line item end date."
+  periodEndDate: Date
+}
+
+"Represents a user membership."
+type Membership {
+  "The ID of the membership."
+  id: ID!
+  "The name of the membership."
+  name: String!
+  "The owner of the membership."
+  owner: Owner!
+  "The state of the membership (i.e. created, finished)."
+  state: EntityState!
+  "The relevance score of the membership."
+  relevance: Float
+  "The creation date of the membership."
+  creationDate: DateTime!
+  "The modified date of the membership."
+  modifiedDate: DateTime
+  "The external identifier of the user membership."
+  identifier: String
+  "The role of the user in the organization."
+  role: RoleTypes
+  "The user associated with the membership."
+  user: User @cost(weight: "10")
+}
+
+type Mutation @authorize {
+  "Creates a project environment."
+  createEnvironment(
+    "The properties for the new project environment."
+    environment: EnvironmentInput!
+  ): Environment @cost(weight: "10")
+  "Updates a project environment."
+  updateEnvironment(
+    "The updated properties for the project environment."
+    environment: EnvironmentUpdateInput!
+  ): Environment @cost(weight: "10")
+  "Regenerates the JWT signing secret for a project environment."
+  regenerateEnvironmentSecret(
+    "The ID of the environment."
+    id: ID!
+  ): Environment @cost(weight: "10")
+  "Generates a project environment token for accessing the Data API."
+  generateEnvironmentToken(
+    "The ID of the environment."
+    id: ID!
+    "The authorization role assigned to the token."
+    role: RoleTypes
+  ): EnvironmentToken @cost(weight: "10")
+  "Deletes a project environment."
+  deleteEnvironment("The ID of the environment." id: ID!): Environment
+    @cost(weight: "10")
+  "Fixes an organization."
+  fixOrganization("The ID of the organization." id: ID!): Organization
+    @cost(weight: "10")
+  "Setup organization billing."
+  setupOrganizationBilling(
+    successUri: URL!
+    cancelUri: URL!
+  ): OrganizationBilling @cost(weight: "10")
+  "Creates a new API key for programmatic access."
+  createApiKey("The name for the API key." name: String!): ApiKeyCreated
+    @cost(weight: "10")
+  "Revokes an API key."
+  revokeApiKey("The ID of the API key to revoke." keyId: String!): Organization
+    @cost(weight: "10")
+  "Creates a project."
+  createProject(
+    "The properties for the new project."
+    project: ProjectInput!
+  ): Project @cost(weight: "10")
+  "Updates a project."
+  updateProject(
+    "The updated properties for the project."
+    project: ProjectUpdateInput!
+  ): Project @cost(weight: "10")
+  "Fix a project."
+  fixProject(
+    "The ID of the project."
+    id: ID!
+    "The ID of the organization."
+    organizationId: ID!
+  ): Project @cost(weight: "10")
+  "Deletes a project."
+  deleteProject("The ID of the project." id: ID!): Project @cost(weight: "10")
+  "Disables a project."
+  disableProject("The ID of the project." id: ID!): Project @cost(weight: "10")
+  "Enables a project."
+  enableProject("The ID of the project." id: ID!): Project @cost(weight: "10")
+  "Updates a project subscription."
+  updateProjectSubscription(
+    "The ID of the project."
+    id: ID!
+    "The Stripe product identifier."
+    productIdentifier: String!
+  ): Project @cost(weight: "10")
+}
+
+"Represents an organization."
+type Organization {
+  "The ID of the organization."
+  id: ID!
+  "The name of the organization."
+  name: String!
+  "The owner of the organization."
+  owner: Owner!
+  "The state of the organization (i.e. created, finished)."
+  state: EntityState!
+  "The relevance score of the organization."
+  relevance: Float
+  "The creation date of the organization."
+  creationDate: DateTime!
+  "The modified date of the organization."
+  modifiedDate: DateTime
+  "The external identifier of the organization."
+  identifier: String
+  "The description of the organization."
+  description: String
+  "The billing identifier of the organization."
+  billingIdentifier: String
+  "The billing email of the organization."
+  billingEmail: String
+  "The organization project quota limits."
+  quota: OrganizationQuota
+  "The API keys for programmatic access."
+  apiKeys: [ApiKeyMetadata] @authorize
+  "The organization payment methods."
+  paymentMethods: [PaymentMethod] @cost(weight: "10")
+  "The users that are members of the organization."
+  users: [User] @cost(weight: "10")
+  "The user memberships associated with the organization."
+  memberships: [Membership] @cost(weight: "10")
+  "The projects associated with the organization."
+  projects: [Project] @cost(weight: "10")
+}
+
+"Represents the organization billing session."
+type OrganizationBilling {
+  "The organization billing session."
+  identifier: String
+  "The organization billing redirect URL."
+  redirectUrl: URL
+  "The setup intent for saving payment methods."
+  setupIntent: SetupIntent
+}
+
+"Represents the organization project quota limits."
+type OrganizationQuota {
+  "The maximum number of free-tier projects."
+  maxFreeProjects: Int
+  "The maximum number of paid-tier projects."
+  maxPaidProjects: Int
+}
+
+"Represents organization query results."
+type OrganizationResults {
+  "The list of organization query results."
+  results: [Organization!]
+}
+
+"Represents an entity owner."
+type Owner {
+  "The tenant identifier."
+  id: ID!
+}
+
+"Represents the payment method."
+type PaymentMethod {
+  "True if payment method is default for organization."
+  isDefault: Boolean
+  "The payment method identifier."
+  identifier: String
+  "The payment method type."
+  methodType: PaymentMethodTypes
+  "The card type."
+  cardType: CardTypes
+  "The card funding type."
+  fundingType: CardFundingTypes
+  "The bank account name."
+  bankName: String
+  "The bank account type."
+  accountType: BankAccountTypes
+  "The bank account holder type."
+  accountHolderType: BankAccountHolderTypes
+  "The Link user email address."
+  email: String
+  "The last four digits of the card."
+  lastFour: String
+  "The card expiry month (two digits)."
+  expiresMonth: Int
+  "The card expiry year (four digits)."
+  expiresYear: Int
+}
+
+"Represents a product price."
+type Price {
+  "The price name."
+  name: String
+  "The price identifier."
+  identifier: String
+  "The price, in cents."
+  price: Long
+  "The price currency."
+  currency: String
+  "The price billing scheme."
+  billingScheme: BillingSchemes
+  "The price usage type."
+  usageType: UsageTypes
+  "The price aggregate usage type."
+  aggregateUsageType: AggregateUsageTypes
+  "The price period unit (i.e. month, year)."
+  periodUnit: PeriodUnits
+  "The price period (i.e. every 1 month)."
+  period: Int
+}
+
+"Represents a product."
+type Product {
+  "The product name."
+  name: String
+  "The product identifier."
+  identifier: String
+  "The product description."
+  description: String
+  "The product unit."
+  unit: ProductUnits
+  "The product features."
+  features: [String]
+  "The product prices."
+  prices: [Price!]
+}
+
+"Represents product query results."
+type ProductResults {
+  "The list of product query results."
+  results: [Product!]
+}
+
+"Represents a project."
+type Project {
+  "The ID of the project."
+  id: ID!
+  "The name of the project."
+  name: String!
+  "The owner of the project."
+  owner: Owner!
+  "The state of the project (i.e. created, finished)."
+  state: EntityState!
+  "The relevance score of the project."
+  relevance: Float
+  "The creation date of the project."
+  creationDate: DateTime!
+  "The modified date of the project."
+  modifiedDate: DateTime
+  "The URI to access the project's Data API."
+  uri: String
+  "The description of the project."
+  description: String
+  "The cloud platform (Azure, AWS, GCP) where project was provisioned."
+  platform: ResourceConnectorTypes
+  "The cloud platform region where project was provisioned."
+  region: String
+  "The project quota."
+  quota: ProjectQuota
+  "The project billing subscription."
+  subscription: Subscription @cost(weight: "10")
+  "The upcoming subscription invoice."
+  upcomingInvoice: Invoice @cost(weight: "10")
+  "The subscription invoices."
+  invoices: [Invoice] @cost(weight: "10")
+  "The environments associated with the project."
+  environments: [Environment] @cost(weight: "10")
+}
+
+"Represents the project quota."
+type ProjectQuota {
+  "The storage quota, in bytes."
+  storage: Long
+  "The maximum number of contents which can be ingested."
+  contents: Int
+  "The maximum number of credits which can be accrued."
+  credits: Int
+  "The maximum number of feeds which can be created."
+  feeds: Int
+  "The maximum number of posts which can be read by feeds."
+  posts: Int
+  "The maximum number of conversations which can be created."
+  conversations: Int
+}
+
+"Represents a project region."
+type ProjectRegion {
+  "The description of the project region."
+  description: String
+  "The cloud platform (Azure, AWS, GCP)."
+  platform: ResourceConnectorTypes
+  "The cloud platform region."
+  region: String
+}
+
+"Represents project query results."
+type ProjectResults {
+  "The list of project query results."
+  results: [Project!]
+}
+
+type Query @authorize @authorize @authorize @authorize @authorize {
+  "Fetch logged-in organization."
+  organization: Organization @cost(weight: "10")
+  "Lookup an organization given its ID."
+  organizationById(id: ID!): Organization @cost(weight: "10")
+  "Lookup an organization given its Clerk identifier."
+  organizationByIdentifier(identifier: String!): Organization
+    @cost(weight: "10")
+  "Retrieves organizations based on the provided filter criteria."
+  organizations(filter: OrganizationFilter): OrganizationResults
+    @cost(weight: "10")
+  "Get organization billing session details."
+  organizationBillingSession(sessionId: ID!): OrganizationBilling
+    @cost(weight: "10")
+  "Lists API keys for the organization."
+  listApiKeys: [ApiKeyMetadata] @cost(weight: "10")
+  "Retrieves Stripe products."
+  products: ProductResults @cost(weight: "10")
+  "Lookup a project given its ID."
+  project("ID of the project." id: ID!): Project @cost(weight: "10")
+  "Retrieves projects based on the provided filter criteria."
+  projects(
+    "The filter criteria to apply when retrieving projects."
+    filter: ProjectFilter
+  ): ProjectResults @cost(weight: "10")
+  "Retrieves supported project regions."
+  projectRegions: ProjectRegion @cost(weight: "10")
+  "Fetch logged-in user."
+  user: User @cost(weight: "10")
+  "Lookup a user given its ID."
+  userById(id: ID!): User @cost(weight: "10")
+  "Lookup a user given its Clerk identifier."
+  userByIdentifier(identifier: String!): User @cost(weight: "10")
+  "Retrieves users based on the provided filter criteria."
+  users(filter: UserFilter): UserResults @cost(weight: "10")
+}
+
+"Represents a Stripe setup intent for saving payment methods."
+type SetupIntent {
+  "The setup intent identifier."
+  id: String
+  "The setup intent client secret."
+  clientSecret: String
+  "The setup intent status."
+  status: String
+}
+
+"Represents a list of string reults."
+type StringResults {
+  "The list of strings result."
+  results: [String!]
+}
+
+"Represents a subscription."
+type Subscription {
+  "The subscription status."
+  status: SubscriptionStatus
+  "The subscription identifier."
+  identifier: String
+  "The subscription description."
+  description: String
+  "The subscription start date."
+  startDate: Date
+  "The subscription end date."
+  endDate: Date
+  "The subscription period start date."
+  periodStartDate: Date
+  "The subscription period end date."
+  periodEndDate: Date
+  "The subscribed products."
+  products: [Product!]
+  "The invoice client secret for 3DS authentication."
+  invoiceClientSecret: String
+}
+
+"Represents a user."
+type User {
+  "The ID of the user."
+  id: ID!
+  "The name of the user."
+  name: String!
+  "The owner of the user."
+  owner: Owner!
+  "The state of the user (i.e. created, finished)."
+  state: EntityState!
+  "The relevance score of the user."
+  relevance: Float
+  "The creation date of the user."
+  creationDate: DateTime!
+  "The modified date of the user."
+  modifiedDate: DateTime
+  "The external identifier of the user."
+  identifier: String
+  "The description of the user."
+  description: String
+  "The given name of the user."
+  givenName: String
+  "The family name of the user."
+  familyName: String
+  "The phone number of the user."
+  phoneNumber: String
+  "The email address of the user."
+  email: String
+  "The reference to the memberships that the user belongs to."
+  memberships: [Membership] @cost(weight: "10")
+  "The reference to the organizations that the user belongs to."
+  organizations: [Organization] @cost(weight: "10")
+}
+
+"Represents user query results."
+type UserResults {
+  "The list of user query results."
+  results: [User!]
+}
+
+"Represents a filtered range of date/time values, in UTC format."
+input DateRangeFilter {
+  "Starting value of date range."
+  from: DateTime
+  "Ending value of date range."
+  to: DateTime
+}
+
+"Represents an entity reference filter."
+input EntityReferenceFilter {
+  "The ID of the entity."
+  id: ID!
+}
+
+"Represents an entity reference."
+input EntityReferenceInput {
+  "The ID of the entity."
+  id: ID!
+}
+
+"Represents a filter for environments."
+input EnvironmentFilter {
+  "Filter environment(s) by searching for similar text."
+  search: String
+  "The sort order for query results."
+  orderBy: OrderByTypes
+  "The sort direction for query results."
+  direction: OrderDirectionTypes
+  "Skip the specified number of environment(s) from the beginning of the result set. Only supported on keyword search."
+  offset: Int
+  "Limit the number of environment(s) to be returned. Defaults to 100."
+  limit: Int
+  "Filter environment(s) by their unique ID."
+  id: ID
+  "Filter environment(s) by their name."
+  name: String
+  "Filter environment(s) by their states."
+  states: [EntityState!]
+  "Filter by creation date recent timespan. For example, a timespan of one day will return environment(s) created in the last 24 hours."
+  createdInLast: TimeSpan
+  "Filter environment(s) by their creation date range."
+  creationDateRange: DateRangeFilter
+  "Filter by modified date recent timespan. For example, a timespan of one day will return environment(s) modified in the last 24 hours."
+  modifiedInLast: TimeSpan
+  "Filter environment(s) by their modified date range."
+  modifiedDateRange: DateRangeFilter
+  "The reference to the project that the environment belongs to."
+  project: EntityReferenceFilter
+}
+
+"Represents an environment."
+input EnvironmentInput {
+  "The name of the environment."
+  name: String!
+  "The reference to the project that the environment belongs to."
+  project: EntityReferenceInput!
+}
+
+"Represents an environment."
+input EnvironmentUpdateInput {
+  "The ID of the environment to update."
+  id: ID!
+  "The name of the environment."
+  name: String
+}
+
+"Represents a filter for user memberships."
+input MembershipFilter {
+  "Filter membership(s) by searching for similar text."
+  search: String
+  "The sort order for query results."
+  orderBy: OrderByTypes
+  "The sort direction for query results."
+  direction: OrderDirectionTypes
+  "Skip the specified number of membership(s) from the beginning of the result set. Only supported on keyword search."
+  offset: Int
+  "Limit the number of membership(s) to be returned. Defaults to 100."
+  limit: Int
+  "Filter membership(s) by their unique ID."
+  id: ID
+  "Filter membership(s) by their name."
+  name: String
+  "Filter membership(s) by their states."
+  states: [EntityState!]
+  "Filter by creation date recent timespan. For example, a timespan of one day will return membership(s) created in the last 24 hours."
+  createdInLast: TimeSpan
+  "Filter membership(s) by their creation date range."
+  creationDateRange: DateRangeFilter
+  "Filter by modified date recent timespan. For example, a timespan of one day will return membership(s) modified in the last 24 hours."
+  modifiedInLast: TimeSpan
+  "Filter membership(s) by their modified date range."
+  modifiedDateRange: DateRangeFilter
+  "The external identifier of the user membership."
+  identifier: String
+}
+
+"Represents a user membership."
+input MembershipInput {
+  "The name of the membership."
+  name: String!
+  "The external identifier of the user membership."
+  identifier: String
+  "The role of the user in the organization."
+  role: RoleTypes!
+  "The user associated with the membership."
+  user: EntityReferenceInput!
+}
+
+"Represents a user membership."
+input MembershipUpdateInput {
+  "The ID of the membership to update."
+  id: ID!
+  "The name of the membership."
+  name: String
+  "The role of the user in the organization."
+  role: RoleTypes
+}
+
+"Represents a filter for organizations."
+input OrganizationFilter {
+  "Filter organization(s) by searching for similar text."
+  search: String
+  "The sort order for query results."
+  orderBy: OrderByTypes
+  "The sort direction for query results."
+  direction: OrderDirectionTypes
+  "Skip the specified number of organization(s) from the beginning of the result set. Only supported on keyword search."
+  offset: Int
+  "Limit the number of organization(s) to be returned. Defaults to 100."
+  limit: Int
+  "Filter organization(s) by their unique ID."
+  id: ID
+  "Filter organization(s) by their name."
+  name: String
+  "Filter organization(s) by their states."
+  states: [EntityState!]
+  "Filter by creation date recent timespan. For example, a timespan of one day will return organization(s) created in the last 24 hours."
+  createdInLast: TimeSpan
+  "Filter organization(s) by their creation date range."
+  creationDateRange: DateRangeFilter
+  "Filter by modified date recent timespan. For example, a timespan of one day will return organization(s) modified in the last 24 hours."
+  modifiedInLast: TimeSpan
+  "Filter organization(s) by their modified date range."
+  modifiedDateRange: DateRangeFilter
+  "Filter organizations by their external identifier."
+  identifier: String
+}
+
+"Represents an organization."
+input OrganizationInput {
+  "The name of the organization."
+  name: String!
+  "The external identifier of the organization."
+  identifier: String
+  "The description of the organization."
+  description: String
+}
+
+"Represents an organization."
+input OrganizationUpdateInput {
+  "The ID of the organization to update."
+  id: ID!
+  "The name of the organization."
+  name: String
+  "The description of the organization."
+  description: String
+  "The billing identifier of the organization."
+  billingIdentifier: String
+  "The billing email of the organization."
+  billingEmail: String
+}
+
+"Represents a filter for projects."
+input ProjectFilter {
+  "Filter project(s) by searching for similar text."
+  search: String
+  "The sort order for query results."
+  orderBy: OrderByTypes
+  "The sort direction for query results."
+  direction: OrderDirectionTypes
+  "Skip the specified number of project(s) from the beginning of the result set. Only supported on keyword search."
+  offset: Int
+  "Limit the number of project(s) to be returned. Defaults to 100."
+  limit: Int
+  "Filter project(s) by their unique ID."
+  id: ID
+  "Filter project(s) by their name."
+  name: String
+  "Filter project(s) by their states."
+  states: [EntityState!]
+  "Filter by creation date recent timespan. For example, a timespan of one day will return project(s) created in the last 24 hours."
+  createdInLast: TimeSpan
+  "Filter project(s) by their creation date range."
+  creationDateRange: DateRangeFilter
+  "Filter by modified date recent timespan. For example, a timespan of one day will return project(s) modified in the last 24 hours."
+  modifiedInLast: TimeSpan
+  "Filter project(s) by their modified date range."
+  modifiedDateRange: DateRangeFilter
+  "Filter projects by their cloud platform."
+  platform: ResourceConnectorTypes
+  "Filter projects by their cloud platform region."
+  region: String
+}
+
+"Represents a project."
+input ProjectInput {
+  "The name of the project."
+  name: String!
+  "The description of the project."
+  description: String
+  "The cloud platform (Azure, AWS, GCP) where project will be provisioned."
+  platform: ResourceConnectorTypes!
+  "The cloud platform region where project will be provisioned."
+  region: String!
+}
+
+"Represents a project."
+input ProjectUpdateInput {
+  "The ID of the project to update."
+  id: ID!
+  "The name of the project."
+  name: String
+  "The description of the project."
+  description: String
+}
+
+"Represents a filter for users."
+input UserFilter {
+  "Filter user(s) by searching for similar text."
+  search: String
+  "The sort order for query results."
+  orderBy: OrderByTypes
+  "The sort direction for query results."
+  direction: OrderDirectionTypes
+  "Skip the specified number of user(s) from the beginning of the result set. Only supported on keyword search."
+  offset: Int
+  "Limit the number of user(s) to be returned. Defaults to 100."
+  limit: Int
+  "Filter user(s) by their unique ID."
+  id: ID
+  "Filter user(s) by their name."
+  name: String
+  "Filter user(s) by their states."
+  states: [EntityState!]
+  "Filter by creation date recent timespan. For example, a timespan of one day will return user(s) created in the last 24 hours."
+  createdInLast: TimeSpan
+  "Filter user(s) by their creation date range."
+  creationDateRange: DateRangeFilter
+  "Filter by modified date recent timespan. For example, a timespan of one day will return user(s) modified in the last 24 hours."
+  modifiedInLast: TimeSpan
+  "Filter user(s) by their modified date range."
+  modifiedDateRange: DateRangeFilter
+  "Filter users by their external identifier."
+  identifier: String
+  "Filter users by their family name."
+  givenName: String
+  "Filter users by their given name."
+  familyName: String
+  "Filter users by their phone numbers."
+  phoneNumber: String
+  "Filter users by their email address."
+  email: String
+}
+
+"Represents a user."
+input UserInput {
+  "The name of the user."
+  name: String!
+  "The external identifier of the user."
+  identifier: String!
+  "The description of the user."
+  description: String
+  "The given name of the user."
+  givenName: String!
+  "The family name of the user."
+  familyName: String!
+  "The phone number of the user."
+  phoneNumber: String
+  "The email address of the user."
+  email: String!
+}
+
+"Represents a user."
+input UserUpdateInput {
+  "The ID of the user to update."
+  id: ID!
+  "The name of the user."
+  name: String
+  description: String
+  "The given name of the user."
+  givenName: String
+  "The family name of the user."
+  familyName: String
+  "The phone number of the user."
+  phoneNumber: String
+  "The email address of the user."
+  email: String
+}
+
+enum AggregateUsageTypes {
+  "Last During Period"
+  LAST_DURING_PERIOD
+  "Last Ever"
+  LAST_EVER
+  "Maximum"
+  MAXIMUM
+  "Sum"
+  SUM
+}
+
+"Defines when a policy shall be executed."
+enum ApplyPolicy {
+  "Before the resolver was executed."
+  BEFORE_RESOLVER
+  "After the resolver was executed."
+  AFTER_RESOLVER
+  "The policy is applied in the validation step before the execution."
+  VALIDATION
+}
+
+enum BankAccountHolderTypes {
+  "Company"
+  COMPANY
+  "Individual"
+  INDIVIDUAL
+}
+
+enum BankAccountTypes {
+  "Checking"
+  CHECKING
+  "Savings"
+  SAVINGS
+}
+
+enum BillingSchemes {
+  "Flat fee"
+  FLAT_FEE
+  "Per unit"
+  PER_UNIT
+  "Tiered"
+  TIERED
+  "Volume"
+  VOLUME
+  "Stairstep"
+  STAIRSTEP
+}
+
+enum CardFundingTypes {
+  "Credit"
+  CREDIT
+  "Debit"
+  DEBIT
+  "Prepaid"
+  PREPAID
+  "Unknown"
+  UNKNOWN
+}
+
+enum CardTypes {
+  "American Express"
+  AMERICAN_EXPRESS
+  "Diners Club"
+  DINERS_CLUB
+  "Discover"
+  DISCOVER
+  "MasterCard"
+  MASTER_CARD
+  "Visa"
+  VISA
+  "Unknown"
+  UNKNOWN
+}
+
+"Entity state"
+enum EntityState {
+  "Initialized"
+  INITIALIZED
+  "Restarted"
+  RESTARTED
+  "Created"
+  CREATED
+  "Ingested"
+  INGESTED
+  "Indexed"
+  INDEXED
+  "Prepared"
+  PREPARED
+  "Sanitized"
+  SANITIZED
+  "Extracted"
+  EXTRACTED
+  "Enriched"
+  ENRICHED
+  "Classified"
+  CLASSIFIED
+  "Changed"
+  CHANGED
+  "Archived"
+  ARCHIVED
+  "Approved"
+  APPROVED
+  "Rejected"
+  REJECTED
+  "Pending"
+  PENDING
+  "Queued"
+  QUEUED
+  "Opened"
+  OPENED
+  "Closed"
+  CLOSED
+  "Finished"
+  FINISHED
+  "Paused"
+  PAUSED
+  "Running"
+  RUNNING
+  "Subscribed"
+  SUBSCRIBED
+  "Errored"
+  ERRORED
+  "Enabled"
+  ENABLED
+  "Disabled"
+  DISABLED
+  "Deleted"
+  DELETED
+}
+
+"Environment type"
+enum EnvironmentTypes {
+  "Development environment"
+  DEVELOPMENT
+  "Production environment"
+  PRODUCTION
+}
+
+enum InvoiceStatus {
+  "Draft"
+  DRAFT
+  "Open"
+  OPEN
+  "Paid"
+  PAID
+  "Uncollectible"
+  UNCOLLECTIBLE
+  "Void"
+  VOID
+}
+
+"Order by type"
+enum OrderByTypes {
+  "Order by name"
+  NAME
+  "Order by creation date"
+  CREATION_DATE
+  "Order by original date"
+  ORIGINAL_DATE
+  "Order by relevance"
+  RELEVANCE
+}
+
+"Order direction type"
+enum OrderDirectionTypes {
+  "Order ascending"
+  ASCENDING
+  "Order descending"
+  DESCENDING
+}
+
+enum PaymentMethodTypes {
+  "Card"
+  CARD
+  "US Bank Account"
+  BANK_ACCOUNT
+  "Stripe Link"
+  LINK
+}
+
+enum PeriodUnits {
+  "Daily"
+  DAY
+  "Weekly"
+  WEEK
+  "Monthly"
+  MONTH
+  "Yearly"
+  YEAR
+}
+
+enum ProductUnits {
+  "Credit"
+  CREDIT
+  "Unit"
+  UNIT
+}
+
+"Resource connector type"
+enum ResourceConnectorTypes {
+  "Amazon Web Services"
+  AMAZON
+  "Microsoft Azure"
+  AZURE
+  "Google Cloud"
+  GOOGLE
+}
+
+"Role type"
+enum RoleTypes {
+  "System Administrator"
+  SYSTEM_ADMINISTRATOR
+  "Administrator"
+  ADMINISTRATOR
+  "Owner"
+  OWNER
+  "Contributor"
+  CONTRIBUTOR
+  "Reader"
+  READER
+}
+
+enum SubscriptionStatus {
+  "Incomplete"
+  INCOMPLETE
+  "Incomplete Expired"
+  INCOMPLETE_EXPIRED
+  "Trialing"
+  TRIALING
+  "Active"
+  ACTIVE
+  "Past Due"
+  PAST_DUE
+  "Cancelled"
+  CANCELLED
+  "Unpaid"
+  UNPAID
+}
+
+enum UsageTypes {
+  "Licensed"
+  LICENSED
+  "Metered"
+  METERED
+}
+
+"The authorize directive."
+directive @authorize(
+  "The name of the authorization policy that determines access to the annotated resource."
+  policy: String
+  "Roles that are allowed to access the annotated resource."
+  roles: [String!]
+  "Defines when when the authorize directive shall be applied.By default the authorize directives are applied during the validation phase."
+  apply: ApplyPolicy! = BEFORE_RESOLVER
+) repeatable on OBJECT | FIELD_DEFINITION
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost(
+  "The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc."
+  weight: String!
+) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
+
+"The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
+directive @specifiedBy(
+  "The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types."
+  url: String!
+) on SCALAR
+
+"The `Date` scalar represents an ISO-8601 compliant date type."
+scalar Date
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime @specifiedBy(url: "https://www.graphql-scalars.com/date-time")
+
+"The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1."
+scalar Long
+
+"The `TimeSpan` scalar represents an ISO-8601 compliant duration type."
+scalar TimeSpan
+
+scalar URL @specifiedBy(url: "https://tools.ietf.org/html/rfc3986")

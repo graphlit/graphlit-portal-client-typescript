@@ -1,0 +1,18 @@
+query QueryProjects($filter: ProjectFilter) {
+  projects(filter: $filter) {
+    results {
+      id
+      name
+      description
+      state
+      platform
+      region
+      uri
+      creationDate
+      modifiedDate
+      owner {
+        id
+      }
+    }
+  }
+}

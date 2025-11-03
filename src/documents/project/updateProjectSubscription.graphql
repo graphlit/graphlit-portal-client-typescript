@@ -1,0 +1,10 @@
+mutation UpdateProjectSubscription($id: ID!, $productIdentifier: String!) {
+  updateProjectSubscription(id: $id, productIdentifier: $productIdentifier) {
+    id
+    name
+    subscription {
+      identifier
+      status
+    }
+  }
+}
