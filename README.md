@@ -51,7 +51,7 @@ Get started in 2 minutes:
 # Install the SDK
 npm install graphlit-portal-client
 
-# Set your credentials (from https://portal.graphlit.io/api-keys)
+# Set your credentials (from https://portal.graphlit.dev/api-keys)
 export GRAPHLIT_API_KEY=glk_live_your_key_here
 export GRAPHLIT_ORGANIZATION_ID=your_org_guid_here
 ```
@@ -90,7 +90,7 @@ npm install graphlit-portal-client
 
 To use this SDK, you need an organization API key:
 
-1. Go to [Graphlit Portal](https://portal.graphlit.io)
+1. Go to [Graphlit Portal](https://portal.graphlit.dev)
 2. Navigate to your organization → **API Keys**
 3. Click **Create API Key**
 4. Give it a name (e.g., "CI/CD Pipeline", "Production Server")
@@ -114,9 +114,6 @@ Create a `.env` file:
 # Required
 GRAPHLIT_API_KEY=glk_live_your_key_here
 GRAPHLIT_ORGANIZATION_ID=your_org_guid_here
-
-# Optional - for development/staging
-GRAPHLIT_PORTAL_URI=https://portal-dev.graphlit.io/api/v1/graphql
 ```
 
 ```typescript
@@ -143,7 +140,7 @@ const client = new GraphlitPortalClient({
 const client = new GraphlitPortalClient(
   "glk_live_...", // apiKey
   "your-org-guid", // organizationId
-  "https://portal-dev.graphlit.io/api/v1/graphql", // portalUri (optional)
+  "https://portal.graphlit.io/api/v1/graphql", // portalUri (optional)
 );
 ```
 
@@ -369,8 +366,7 @@ The SDK supports multiple environments for development, staging, and production 
 
 | Environment              | URL                                             | Use Case                     |
 | ------------------------ | ----------------------------------------------- | ---------------------------- |
-| **Production** (default) | `https://portal.graphlit.io/api/v1/graphql`     | Live production applications |
-| **Development**          | `https://portal-dev.graphlit.io/api/v1/graphql` | Testing and development      |
+| **Production** | `https://portal.graphlit.io/api/v1/graphql`     | Live production applications |
 
 ### Switching Environments
 
@@ -380,36 +376,14 @@ The SDK supports multiple environments for development, staging, and production 
 const devClient = new GraphlitPortalClient({
   apiKey: process.env.GRAPHLIT_API_KEY,
   organizationId: process.env.GRAPHLIT_ORGANIZATION_ID,
-  portalUri: "https://portal-dev.graphlit.io/api/v1/graphql",
+  portalUri: "https://portal.graphlit.io/api/v1/graphql",
 });
 ```
 
 **Via Environment Variable:**
 
 ```bash
-export GRAPHLIT_PORTAL_URI=https://portal-dev.graphlit.io/api/v1/graphql
-```
-
-### Multi-Environment Setup
-
-```typescript
-// config.ts
-export const getClient = (env: "dev" | "prod") => {
-  const portalUri =
-    env === "dev"
-      ? "https://portal-dev.graphlit.io/api/v1/graphql"
-      : "https://portal.graphlit.io/api/v1/graphql";
-
-  return new GraphlitPortalClient({
-    apiKey: process.env.GRAPHLIT_API_KEY!,
-    organizationId: process.env.GRAPHLIT_ORGANIZATION_ID!,
-    portalUri,
-  });
-};
-
-// Usage
-const devClient = getClient("dev");
-const prodClient = getClient("prod");
+export GRAPHLIT_PORTAL_URI=https://portal.graphlit.io/api/v1/graphql
 ```
 
 ## Error Handling

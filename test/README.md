@@ -17,7 +17,7 @@ Integration tests for the Graphlit Portal Client SDK.
    GRAPHLIT_ORGANIZATION_ID=your_org_guid
    ```
 
-3. Get your credentials from [Graphlit Portal](https://portal.graphlit.io/api-keys)
+3. Get your credentials from [Graphlit Portal](https://portal.graphlit.dev/api-keys)
 
 ## Running Tests
 
@@ -62,10 +62,4 @@ npm test project-operations
 
 ## Notes
 
-⚠️ **Warning**: Tests will create and delete real projects in your organization. Make sure you're using a test/development organization.
-
-💡 **Tip**: Run tests against the development API by setting:
-
-```env
-GRAPHLIT_PORTAL_URI=https://portal-dev.graphlit.io/api/v1/graphql
-```
+⚠️ **Warning**: Tests will create and delete real projects in your organization.

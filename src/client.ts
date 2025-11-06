@@ -30,10 +30,8 @@ export interface GraphlitPortalClientOptions {
   organizationId?: string;
   /**
    * Portal API URI
-   * - Production: https://portal.graphlit.io/api/v1/graphql
-   * - Development: https://portal-dev.graphlit.io/api/v1/graphql
+   * - https://portal.graphlit.io/api/v1/graphql
    * Can also be set via GRAPHLIT_PORTAL_URI environment variable
-   * Defaults to production
    */
   portalUri?: string;
 }
