@@ -203,6 +203,10 @@ export class GraphlitPortalClient {
       throw new Error("Failed to get project");
     }
 
+    if (!result.data.project) {
+      throw new Error(`Project not found: ${id}`);
+    }
+
     return result.data;
   }
 
