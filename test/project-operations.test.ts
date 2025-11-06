@@ -39,8 +39,6 @@ describe("Project Operations Integration Tests", () => {
     const result = await client.createProject({
       name: `Shared Test Project ${Date.now()}`,
       description: "Shared project for integration tests",
-      platform: Types.ResourceConnectorTypes.Azure,
-      region: "eastus",
     });
     sharedProject = result.createProject;
     if (sharedProject?.id) {
@@ -77,20 +75,19 @@ describe("Project Operations Integration Tests", () => {
       "⏳ Creating project (may take 30-60s for cloud provisioning)...",
     );
 
-    const projectInput: Types.ProjectInput = {
-      name: `Test Project ${Date.now()}`,
-      description: "Created by vitest integration test",
-      platform: Types.ResourceConnectorTypes.Azure,
-      region: "eastus",
-    };
+    const projectName = `Test Project ${Date.now()}`;
+    const projectDescription = "Created by vitest integration test";
 
-    const result = await client.createProject(projectInput);
+    const result = await client.createProject({
+      name: projectName,
+      description: projectDescription,
+    });
 
     expect(result.createProject).toBeDefined();
-    expect(result.createProject?.name).toBe(projectInput.name);
-    expect(result.createProject?.description).toBe(projectInput.description);
-    expect(result.createProject?.platform).toBe(projectInput.platform);
-    expect(result.createProject?.region).toBe(projectInput.region);
+    expect(result.createProject?.name).toBe(projectName);
+    expect(result.createProject?.description).toBe(projectDescription);
+    expect(result.createProject?.platform).toBe(Types.ResourceConnectorTypes.Azure);
+    expect(result.createProject?.region).toBe("southcentralus");
     expect(result.createProject?.id).toBeDefined();
 
     // Track for cleanup
@@ -156,8 +153,6 @@ describe("Project Operations Integration Tests", () => {
     const createResult = await client.createProject({
       name: filterProjectName,
       description: "Project for filter testing",
-      platform: Types.ResourceConnectorTypes.Azure,
-      region: "eastus",
     });
 
     expect(createResult.createProject?.id).toBeDefined();
@@ -205,8 +200,6 @@ describe("Project Operations Integration Tests", () => {
     const createResult = await client.createProject({
       name: `Delete Test ${Date.now()}`,
       description: "Will be deleted",
-      platform: Types.ResourceConnectorTypes.Azure,
-      region: "southcentralus",
     });
 
     expect(createResult.createProject?.id).toBeDefined();

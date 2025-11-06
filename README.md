@@ -36,7 +36,7 @@ The Portal Client SDK enables **infrastructure-as-code** for Graphlit - automate
 - [API Reference](#api-reference)
   - [Project Operations](#project-operations)
   - [Subscription Management](#subscription-management)
-- [Environment Support](#environment-support)
+- [API Endpoint](#api-endpoint)
 - [Error Handling](#error-handling)
 - [TypeScript Support](#typescript-support)
 - [Related SDKs](#related-sdks)
@@ -62,12 +62,10 @@ import { GraphlitPortalClient } from "graphlit-portal-client";
 // Initialize client (uses env vars automatically)
 const client = new GraphlitPortalClient();
 
-// Create a project
+// Create a project (platform and region are automatically configured)
 const project = await client.createProject({
   name: "My Production App",
   description: "Production environment",
-  platform: "AZURE",
-  region: "eastus",
 });
 
 console.log(`Created project: ${project.createProject?.name}`);
@@ -156,11 +154,11 @@ const client = new GraphlitPortalClient();
 const project = await client.createProject({
   name: "Analytics Platform",
   description: "Customer analytics with AI",
-  platform: "AZURE", // AZURE, AWS, or GCP
-  region: "eastus", // Cloud region
 });
 
 console.log("Project created:", project.createProject);
+console.log("Platform:", project.createProject?.platform); // Azure
+console.log("Region:", project.createProject?.region); // southcentralus
 ```
 
 ### Listing All Projects
@@ -230,18 +228,16 @@ console.log("Project deleted");
 
 ### Project Operations
 
-#### `createProject(input: ProjectInput): Promise<CreateProjectMutation>`
+#### `createProject(input: CreateProjectInput): Promise<CreateProjectMutation>`
 
-Create a new Graphlit project.
+Create a new Graphlit project. Projects are automatically provisioned on Azure in the South Central US region.
 
 **Parameters:**
 
 - `name` (string, required) - Project name
 - `description` (string, optional) - Project description
-- `platform` (ResourceConnectorTypes, required) - Cloud platform: `AZURE`, `AWS`, or `GCP`
-- `region` (string, required) - Cloud region (e.g., `eastus`, `us-west-2`, `europe-west1`)
 
-**Returns:** Created project with `id`, `name`, `uri`, etc.
+**Returns:** Created project with `id`, `name`, `uri`, `platform` (Azure), `region` (southcentralus), etc.
 
 **Example:**
 
@@ -249,9 +245,10 @@ Create a new Graphlit project.
 const project = await client.createProject({
   name: "Production App",
   description: "Main production environment",
-  platform: "AZURE",
-  region: "eastus",
 });
+
+console.log(`Project created: ${project.createProject?.id}`);
+console.log(`Data Plane API: ${project.createProject?.uri}`);
 ```
 
 ---
@@ -358,33 +355,15 @@ await client.updateProjectSubscription(
 
 ---
 
-## Environment Support
+## API Endpoint
 
-The SDK supports multiple environments for development, staging, and production workflows.
+The SDK connects to the Graphlit Portal API at:
 
-### Available Endpoints
-
-| Environment              | URL                                             | Use Case                     |
-| ------------------------ | ----------------------------------------------- | ---------------------------- |
-| **Production** | `https://portal.graphlit.io/api/v1/graphql`     | Live production applications |
-
-### Switching Environments
-
-**Via Constructor:**
-
-```typescript
-const devClient = new GraphlitPortalClient({
-  apiKey: process.env.GRAPHLIT_API_KEY,
-  organizationId: process.env.GRAPHLIT_ORGANIZATION_ID,
-  portalUri: "https://portal.graphlit.io/api/v1/graphql",
-});
+```
+https://portal.graphlit.io/api/v1/graphql
 ```
 
-**Via Environment Variable:**
-
-```bash
-export GRAPHLIT_PORTAL_URI=https://portal.graphlit.io/api/v1/graphql
-```
+This is configured by default. You typically don't need to specify the `portalUri` unless you have a custom deployment.
 
 ## Error Handling
 
@@ -398,8 +377,7 @@ const client = new GraphlitPortalClient();
 try {
   const project = await client.createProject({
     name: "New Project",
-    platform: "AZURE",
-    region: "eastus",
+    description: "My new project",
   });
 
   console.log("Success:", project.createProject?.id);
@@ -434,19 +412,16 @@ The SDK is built with TypeScript and provides full type safety:
 ```typescript
 import {
   GraphlitPortalClient,
-  ProjectInput,
-  ResourceConnectorTypes,
+  CreateProjectInput,
   Project,
 } from "graphlit-portal-client";
 
 const client = new GraphlitPortalClient();
 
 // Type-safe project creation
-const input: ProjectInput = {
+const input: CreateProjectInput = {
   name: "My Project",
   description: "Description",
-  platform: ResourceConnectorTypes.Azure, // Autocomplete available
-  region: "eastus",
 };
 
 const result = await client.createProject(input);
@@ -457,6 +432,8 @@ if (project) {
   console.log(project.id); // TypeScript knows these properties exist
   console.log(project.name);
   console.log(project.uri);
+  console.log(project.platform); // Azure
+  console.log(project.region); // southcentralus
 }
 ```
 
@@ -467,7 +444,7 @@ All types are auto-generated from the GraphQL schema:
 ```typescript
 import type {
   // Input types
-  ProjectInput,
+  CreateProjectInput,
   ProjectUpdateInput,
   ProjectFilter,
 
@@ -477,7 +454,6 @@ import type {
   Subscription,
 
   // Enums
-  ResourceConnectorTypes,
   EntityState,
   SubscriptionStatus,
 

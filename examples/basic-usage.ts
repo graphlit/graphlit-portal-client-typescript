@@ -2,7 +2,7 @@ import { GraphlitPortalClient } from "../src/client.js";
 
 async function main() {
   // Initialize client - uses environment variables
-  // GRAPHLIT_API_KEY, GRAPHLIT_ORGANIZATION_ID, GRAPHLIT_PORTAL_URI (optional)
+  // GRAPHLIT_API_KEY, GRAPHLIT_ORGANIZATION_ID
   const client = new GraphlitPortalClient();
 
   try {
@@ -15,13 +15,11 @@ async function main() {
       console.log(`  - ${p.name} (${p.id})`);
     });
 
-    // Create a new project
+    // Create a new project (platform and region are automatically configured)
     console.log("\nCreating new project...");
     const newProject = await client.createProject({
       name: "Test Project",
       description: "Created via SDK",
-      platform: "AZURE",
-      region: "eastus",
     });
     console.log(
       `Created project: ${newProject.createProject?.name} (${newProject.createProject?.id})`,

@@ -130,12 +130,20 @@ export class GraphlitPortalClient {
 
   /**
    * Create a new Graphlit project.
-   * @param project - Project input with name, description, platform, and region
+   * Platform is automatically set to Azure and region to South Central US (scus).
+   * @param input - Project input with name and optional description
    * @returns Created project details
    */
   public async createProject(
-    project: Types.ProjectInput,
+    input: CreateProjectInput,
   ): Promise<Types.CreateProjectMutation> {
+    const project: Types.ProjectInput = {
+      name: input.name,
+      description: input.description,
+      platform: Types.ResourceConnectorTypes.Azure,
+      region: "southcentralus",
+    };
+
     const result = await this.client.mutate<Types.CreateProjectMutation>({
       mutation: Documents.CreateProject,
       variables: { project },
@@ -254,3 +262,4 @@ export class GraphlitPortalClient {
 
 // Export types for consumers
 export * from "./generated/graphql-types.js";
+export type { CreateProjectInput };
