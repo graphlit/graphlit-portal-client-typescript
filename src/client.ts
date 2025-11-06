@@ -37,6 +37,12 @@ export interface GraphlitPortalClientOptions {
 }
 
 /**
+ * Input for creating a new project
+ * Platform and region are automatically configured to Azure/South Central US
+ */
+export type CreateProjectInput = Omit<Types.ProjectInput, 'platform' | 'region'>;
+
+/**
  * Graphlit Portal Client for Control Plane API
  * Manages projects, environments, billing, and organization settings
  */
@@ -262,4 +268,3 @@ export class GraphlitPortalClient {
 
 // Export types for consumers
 export * from "./generated/graphql-types.js";
-export type { CreateProjectInput };
