@@ -30,6 +30,34 @@ export enum AggregateUsageTypes {
   Sum = 'SUM'
 }
 
+/** Response when creating an API key. Token is only shown once! */
+export type ApiKeyCreated = {
+  __typename?: 'ApiKeyCreated';
+  /** When the API key was created. */
+  createdAt: Scalars['DateTime']['output'];
+  /** Unique identifier for this API key. */
+  id: Scalars['String']['output'];
+  /** User-provided name for the API key. */
+  name: Scalars['String']['output'];
+  /** The plaintext API key. This is the ONLY time you will see this value! */
+  token: Scalars['String']['output'];
+};
+
+/** Metadata about an API key (does not include token). */
+export type ApiKeyMetadata = {
+  __typename?: 'ApiKeyMetadata';
+  /** When the API key was created. */
+  createdAt: Scalars['DateTime']['output'];
+  /** Unique identifier for this API key. */
+  id: Scalars['String']['output'];
+  /** Last 4 characters for identification. */
+  lastFourChars: Scalars['String']['output'];
+  /** When the API key was last used (null if never used). */
+  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** User-provided name for the API key. */
+  name: Scalars['String']['output'];
+};
+
 /** Defines when a policy shall be executed. */
 export enum ApplyPolicy {
   /** After the resolver was executed. */
@@ -224,6 +252,10 @@ export type EnvironmentFilter = {
   id?: InputMaybe<Scalars['ID']['input']>;
   /** Limit the number of environment(s) to be returned. Defaults to 100. */
   limit?: InputMaybe<Scalars['Int']['input']>;
+  /** Filter environment(s) by their modified date range. */
+  modifiedDateRange?: InputMaybe<DateRangeFilter>;
+  /** Filter by modified date recent timespan. For example, a timespan of one day will return environment(s) modified in the last 24 hours. */
+  modifiedInLast?: InputMaybe<Scalars['TimeSpan']['input']>;
   /** Filter environment(s) by their name. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Skip the specified number of environment(s) from the beginning of the result set. Only supported on keyword search. */
@@ -379,6 +411,10 @@ export type MembershipFilter = {
   identifier?: InputMaybe<Scalars['String']['input']>;
   /** Limit the number of membership(s) to be returned. Defaults to 100. */
   limit?: InputMaybe<Scalars['Int']['input']>;
+  /** Filter membership(s) by their modified date range. */
+  modifiedDateRange?: InputMaybe<DateRangeFilter>;
+  /** Filter by modified date recent timespan. For example, a timespan of one day will return membership(s) modified in the last 24 hours. */
+  modifiedInLast?: InputMaybe<Scalars['TimeSpan']['input']>;
   /** Filter membership(s) by their name. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Skip the specified number of membership(s) from the beginning of the result set. Only supported on keyword search. */
@@ -415,6 +451,8 @@ export type MembershipUpdateInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Creates a new API key for programmatic access. */
+  createApiKey?: Maybe<ApiKeyCreated>;
   /** Creates a project environment. */
   createEnvironment?: Maybe<Environment>;
   /** Creates a project. */
@@ -435,6 +473,8 @@ export type Mutation = {
   generateEnvironmentToken?: Maybe<EnvironmentToken>;
   /** Regenerates the JWT signing secret for a project environment. */
   regenerateEnvironmentSecret?: Maybe<Environment>;
+  /** Revokes an API key. */
+  revokeApiKey?: Maybe<Organization>;
   /** Setup organization billing. */
   setupOrganizationBilling?: Maybe<OrganizationBilling>;
   /** Updates a project environment. */
@@ -443,6 +483,11 @@ export type Mutation = {
   updateProject?: Maybe<Project>;
   /** Updates a project subscription. */
   updateProjectSubscription?: Maybe<Project>;
+};
+
+
+export type MutationCreateApiKeyArgs = {
+  name: Scalars['String']['input'];
 };
 
 
@@ -498,6 +543,11 @@ export type MutationRegenerateEnvironmentSecretArgs = {
 };
 
 
+export type MutationRevokeApiKeyArgs = {
+  keyId: Scalars['String']['input'];
+};
+
+
 export type MutationSetupOrganizationBillingArgs = {
   cancelUri: Scalars['URL']['input'];
   successUri: Scalars['URL']['input'];
@@ -542,6 +592,8 @@ export enum OrderDirectionTypes {
 /** Represents an organization. */
 export type Organization = {
   __typename?: 'Organization';
+  /** The API keys for programmatic access. */
+  apiKeys?: Maybe<Array<Maybe<ApiKeyMetadata>>>;
   /** The billing email of the organization. */
   billingEmail?: Maybe<Scalars['String']['output']>;
   /** The billing identifier of the organization. */
@@ -566,6 +618,8 @@ export type Organization = {
   paymentMethods?: Maybe<Array<Maybe<PaymentMethod>>>;
   /** The projects associated with the organization. */
   projects?: Maybe<Array<Maybe<Project>>>;
+  /** The organization project quota limits. */
+  quota?: Maybe<OrganizationQuota>;
   /** The relevance score of the organization. */
   relevance?: Maybe<Scalars['Float']['output']>;
   /** The state of the organization (i.e. created, finished). */
@@ -599,6 +653,10 @@ export type OrganizationFilter = {
   identifier?: InputMaybe<Scalars['String']['input']>;
   /** Limit the number of organization(s) to be returned. Defaults to 100. */
   limit?: InputMaybe<Scalars['Int']['input']>;
+  /** Filter organization(s) by their modified date range. */
+  modifiedDateRange?: InputMaybe<DateRangeFilter>;
+  /** Filter by modified date recent timespan. For example, a timespan of one day will return organization(s) modified in the last 24 hours. */
+  modifiedInLast?: InputMaybe<Scalars['TimeSpan']['input']>;
   /** Filter organization(s) by their name. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Skip the specified number of organization(s) from the beginning of the result set. Only supported on keyword search. */
@@ -619,6 +677,15 @@ export type OrganizationInput = {
   identifier?: InputMaybe<Scalars['String']['input']>;
   /** The name of the organization. */
   name: Scalars['String']['input'];
+};
+
+/** Represents the organization project quota limits. */
+export type OrganizationQuota = {
+  __typename?: 'OrganizationQuota';
+  /** The maximum number of free-tier projects. null = default (2), 0 = unlimited, N = specific limit. */
+  maxFreeProjects?: Maybe<Scalars['Int']['output']>;
+  /** The maximum number of paid-tier projects. null = default (10), 0 = unlimited, N = specific limit. */
+  maxPaidProjects?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Represents organization query results. */
@@ -801,6 +868,10 @@ export type ProjectFilter = {
   id?: InputMaybe<Scalars['ID']['input']>;
   /** Limit the number of project(s) to be returned. Defaults to 100. */
   limit?: InputMaybe<Scalars['Int']['input']>;
+  /** Filter project(s) by their modified date range. */
+  modifiedDateRange?: InputMaybe<DateRangeFilter>;
+  /** Filter by modified date recent timespan. For example, a timespan of one day will return project(s) modified in the last 24 hours. */
+  modifiedInLast?: InputMaybe<Scalars['TimeSpan']['input']>;
   /** Filter project(s) by their name. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Skip the specified number of project(s) from the beginning of the result set. Only supported on keyword search. */
@@ -876,6 +947,8 @@ export type ProjectUpdateInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Lists API keys for the organization. */
+  listApiKeys?: Maybe<Array<Maybe<ApiKeyMetadata>>>;
   /** Fetch logged-in organization. */
   organization?: Maybe<Organization>;
   /** Get organization billing session details. */
@@ -1093,6 +1166,10 @@ export type UserFilter = {
   identifier?: InputMaybe<Scalars['String']['input']>;
   /** Limit the number of user(s) to be returned. Defaults to 100. */
   limit?: InputMaybe<Scalars['Int']['input']>;
+  /** Filter user(s) by their modified date range. */
+  modifiedDateRange?: InputMaybe<DateRangeFilter>;
+  /** Filter by modified date recent timespan. For example, a timespan of one day will return user(s) modified in the last 24 hours. */
+  modifiedInLast?: InputMaybe<Scalars['TimeSpan']['input']>;
   /** Filter user(s) by their name. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Skip the specified number of user(s) from the beginning of the result set. Only supported on keyword search. */
@@ -1168,14 +1245,14 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string }, quota?: { __typename?: 'ProjectQuota', credits?: number | null } | null } | null };
+export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string }, quota?: { __typename?: 'ProjectQuota', credits?: number | null, contents?: number | null, feeds?: number | null, conversations?: number | null, storage?: any | null } | null, environments?: Array<{ __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null } | null> | null, subscription?: { __typename?: 'Subscription', status?: SubscriptionStatus | null, identifier?: string | null, description?: string | null, products?: Array<{ __typename?: 'Product', name?: string | null, identifier?: string | null }> | null } | null } | null };
 
 export type QueryProjectsQueryVariables = Exact<{
   filter?: InputMaybe<ProjectFilter>;
 }>;
 
 
-export type QueryProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectResults', results?: Array<{ __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string } }> | null } | null };
+export type QueryProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectResults', results?: Array<{ __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string }, quota?: { __typename?: 'ProjectQuota', credits?: number | null, contents?: number | null, feeds?: number | null, conversations?: number | null, storage?: any | null } | null, environments?: Array<{ __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null } | null> | null, subscription?: { __typename?: 'Subscription', status?: SubscriptionStatus | null, identifier?: string | null, description?: string | null, products?: Array<{ __typename?: 'Product', name?: string | null, identifier?: string | null }> | null } | null }> | null } | null };
 
 export type UpdateProjectMutationVariables = Exact<{
   project: ProjectUpdateInput;

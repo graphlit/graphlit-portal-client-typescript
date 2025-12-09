@@ -41,6 +41,27 @@ export const GetProject = gql`
     }
     quota {
       credits
+      contents
+      feeds
+      conversations
+      storage
+    }
+    environments {
+      id
+      name
+      type
+      state
+      jwtSecret
+      uri
+    }
+    subscription {
+      status
+      identifier
+      description
+      products {
+        name
+        identifier
+      }
     }
   }
 }
@@ -60,6 +81,30 @@ export const QueryProjects = gql`
       modifiedDate
       owner {
         id
+      }
+      quota {
+        credits
+        contents
+        feeds
+        conversations
+        storage
+      }
+      environments {
+        id
+        name
+        type
+        state
+        jwtSecret
+        uri
+      }
+      subscription {
+        status
+        identifier
+        description
+        products {
+          name
+          identifier
+        }
       }
     }
   }

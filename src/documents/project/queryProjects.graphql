@@ -13,6 +13,30 @@ query QueryProjects($filter: ProjectFilter) {
       owner {
         id
       }
+      quota {
+        credits
+        contents
+        feeds
+        conversations
+        storage
+      }
+      environments {
+        id
+        name
+        type
+        state
+        jwtSecret
+        uri
+      }
+      subscription {
+        status
+        identifier
+        description
+        products {
+          name
+          identifier
+        }
+      }
     }
   }
 }
