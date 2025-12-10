@@ -1247,6 +1247,13 @@ export type GetProjectQueryVariables = Exact<{
 
 export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string }, quota?: { __typename?: 'ProjectQuota', credits?: number | null, contents?: number | null, feeds?: number | null, conversations?: number | null, storage?: any | null } | null, environments?: Array<{ __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null } | null> | null, subscription?: { __typename?: 'Subscription', status?: SubscriptionStatus | null, identifier?: string | null, description?: string | null, products?: Array<{ __typename?: 'Product', name?: string | null, identifier?: string | null }> | null } | null } | null };
 
+export type GetProjectInvoicesQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetProjectInvoicesQuery = { __typename?: 'Query', project?: { __typename?: 'Project', id: string, name: string, invoices?: Array<{ __typename?: 'Invoice', status?: InvoiceStatus | null, periodStartDate?: any | null, periodEndDate?: any | null, amountDue?: any | null, amountPaid?: any | null, number?: string | null, uri?: any | null, currency?: string | null } | null> | null, upcomingInvoice?: { __typename?: 'Invoice', status?: InvoiceStatus | null, periodStartDate?: any | null, periodEndDate?: any | null, amountDue?: any | null, amountPaid?: any | null, number?: string | null, uri?: any | null, currency?: string | null, lines?: Array<{ __typename?: 'InvoiceLineItem', description?: string | null, identifier?: string | null, amount?: any | null, currency?: string | null, quantity?: any | null, unitAmount?: any | null, proration?: boolean | null, productName?: string | null, billingScheme?: BillingSchemes | null, usageType?: UsageTypes | null, aggregateUsageType?: AggregateUsageTypes | null, periodStartDate?: any | null, periodEndDate?: any | null }> | null } | null } | null };
+
 export type QueryProjectsQueryVariables = Exact<{
   filter?: InputMaybe<ProjectFilter>;
 }>;

@@ -66,6 +66,49 @@ export const GetProject = gql`
   }
 }
     `;
+export const GetProjectInvoices = gql`
+    query GetProjectInvoices($id: ID!) {
+  project(id: $id) {
+    id
+    name
+    invoices {
+      status
+      periodStartDate
+      periodEndDate
+      amountDue
+      amountPaid
+      number
+      uri
+      currency
+    }
+    upcomingInvoice {
+      status
+      periodStartDate
+      periodEndDate
+      amountDue
+      amountPaid
+      number
+      uri
+      currency
+      lines {
+        description
+        identifier
+        amount
+        currency
+        quantity
+        unitAmount
+        proration
+        productName
+        billingScheme
+        usageType
+        aggregateUsageType
+        periodStartDate
+        periodEndDate
+      }
+    }
+  }
+}
+    `;
 export const QueryProjects = gql`
     query QueryProjects($filter: ProjectFilter) {
   projects(filter: $filter) {

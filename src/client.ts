@@ -264,6 +264,31 @@ export class GraphlitPortalClient {
   }
 
   /**
+   * Get project invoices including upcoming invoice with line items.
+   * Use this to get billing-period credit usage from upcomingInvoice.lines.
+   * @param id - Project ID
+   * @returns Project invoices and upcoming invoice details
+   */
+  public async getProjectInvoices(
+    id: string,
+  ): Promise<Types.GetProjectInvoicesQuery> {
+    const result = await this.client.query<Types.GetProjectInvoicesQuery>({
+      query: Documents.GetProjectInvoices,
+      variables: { id },
+    });
+
+    if (!result.data) {
+      throw new Error("Failed to get project invoices");
+    }
+
+    if (!result.data.project) {
+      throw new Error(`Project not found: ${id}`);
+    }
+
+    return result.data;
+  }
+
+  /**
    * Update a project's subscription tier.
    * @param id - Project ID
    * @param productIdentifier - Stripe product identifier
