@@ -22,10 +22,18 @@ import * as Documents from "./generated/graphql-documents.js";
 export interface GraphlitPortalClientOptions {
   /**
    * Organization API key (glk_live_...)
+   * Use this for server-to-server org-scoped access.
+   * Requires organizationId to be set.
    */
   apiKey?: string;
   /**
-   * Organization GUID
+   * Bearer token (e.g., Clerk JWT) for user-scoped access.
+   * Use this when authenticating on behalf of a user.
+   * Does not require organizationId - user identity comes from the token.
+   */
+  bearerToken?: string;
+  /**
+   * Organization GUID (required when using apiKey, not needed for bearerToken)
    */
   organizationId?: string;
   /**
@@ -50,6 +58,7 @@ export class GraphlitPortalClient {
   private client: ApolloClient<NormalizedCacheObject>;
   private portalUri: string;
   private apiKey: string | undefined;
+  private bearerToken: string | undefined;
   private organizationId: string | undefined;
 
   constructor(
@@ -79,7 +88,10 @@ export class GraphlitPortalClient {
         : undefined) ||
       "https://portal.graphlit.io/api/v1/graphql";
 
-    // Support environment variables for credentials
+    // Support bearer token for user-scoped auth (e.g., Clerk JWT)
+    this.bearerToken = options.bearerToken;
+
+    // Support environment variables for API key credentials
     this.apiKey =
       options.apiKey ||
       (typeof process !== "undefined"
@@ -92,14 +104,17 @@ export class GraphlitPortalClient {
         ? process.env.GRAPHLIT_ORGANIZATION_ID
         : undefined);
 
-    if (!this.apiKey) {
+    // Validate authentication: bearerToken takes precedence over apiKey
+    // If both are provided, bearerToken is used
+    if (!this.bearerToken && !this.apiKey) {
       throw new Error(
-        "API key is required. Provide via options.apiKey or GRAPHLIT_API_KEY environment variable",
+        "Authentication required. Provide either options.bearerToken (for user auth) or options.apiKey (for org auth)",
       );
     }
-    if (!this.organizationId) {
+    // organizationId only required when using apiKey (not bearerToken)
+    if (!this.bearerToken && this.apiKey && !this.organizationId) {
       throw new Error(
-        "Organization ID is required. Provide via options.organizationId or GRAPHLIT_ORGANIZATION_ID environment variable",
+        "Organization ID is required when using API key. Provide via options.organizationId or GRAPHLIT_ORGANIZATION_ID environment variable",
       );
     }
 
@@ -109,14 +124,20 @@ export class GraphlitPortalClient {
       fetch,
     });
 
-    // Add auth headers
+    // Add auth headers based on auth type
     const authLink = new ApolloLink((operation, forward) => {
-      operation.setContext({
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-          "X-Organization-Id": this.organizationId,
-        },
-      });
+      const headers: Record<string, string> = {};
+
+      if (this.bearerToken) {
+        // User-scoped auth via bearer token (e.g., Clerk JWT)
+        headers["Authorization"] = `Bearer ${this.bearerToken}`;
+      } else if (this.apiKey) {
+        // Org-scoped auth via API key
+        headers["Authorization"] = `Bearer ${this.apiKey}`;
+        headers["X-Organization-Id"] = this.organizationId!;
+      }
+
+      operation.setContext({ headers });
       return forward(operation);
     });
 
