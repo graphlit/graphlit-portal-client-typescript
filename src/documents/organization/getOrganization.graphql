@@ -1,0 +1,9 @@
+query GetOrganization {
+  organization {
+    id
+    name
+    identifier
+    state
+    creationDate
+  }
+}

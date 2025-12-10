@@ -1226,6 +1226,11 @@ export type UserUpdateInput = {
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type GetOrganizationQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetOrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', id: string, name: string, identifier?: string | null, state: EntityState, creationDate: any } | null };
+
 export type CreateProjectMutationVariables = Exact<{
   project: ProjectInput;
 }>;

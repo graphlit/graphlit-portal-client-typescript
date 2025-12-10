@@ -1,5 +1,16 @@
 import gql from 'graphql-tag';
 
+export const GetOrganization = gql`
+    query GetOrganization {
+  organization {
+    id
+    name
+    identifier
+    state
+    creationDate
+  }
+}
+    `;
 export const CreateProject = gql`
     mutation CreateProject($project: ProjectInput!) {
   createProject(project: $project) {
