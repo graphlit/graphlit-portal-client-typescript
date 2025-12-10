@@ -310,6 +310,27 @@ export class GraphlitPortalClient {
 
     return result.data;
   }
+
+  /**
+   * Get the current user's organization.
+   * Use this to get the organization identifier (Clerk org ID) for building Portal URLs.
+   * @returns Organization details including identifier
+   */
+  public async getOrganization(): Promise<Types.GetOrganizationQuery> {
+    const result = await this.client.query<Types.GetOrganizationQuery>({
+      query: Documents.GetOrganization,
+    });
+
+    if (!result.data) {
+      throw new Error("Failed to get organization");
+    }
+
+    if (!result.data.organization) {
+      throw new Error("Organization not found");
+    }
+
+    return result.data;
+  }
 }
 
 // Export types for consumers
