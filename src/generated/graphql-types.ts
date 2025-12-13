@@ -1280,3 +1280,10 @@ export type UpdateProjectSubscriptionMutationVariables = Exact<{
 
 
 export type UpdateProjectSubscriptionMutation = { __typename?: 'Mutation', updateProjectSubscription?: { __typename?: 'Project', id: string, name: string, subscription?: { __typename?: 'Subscription', identifier?: string | null, status?: SubscriptionStatus | null } | null } | null };
+
+export type UpgradePayAsYouGoMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type UpgradePayAsYouGoMutation = { __typename?: 'Mutation', upgradePayAsYouGo?: { __typename?: 'Project', id: string, name: string, subscription?: { __typename?: 'Subscription', identifier?: string | null, status?: SubscriptionStatus | null } | null } | null };

@@ -312,6 +312,27 @@ export class GraphlitPortalClient {
   }
 
   /**
+   * Upgrade a project to a fixed Pay As You Go subscription.
+   * @param id - Project ID
+   * @returns Updated project with new subscription
+   */
+  public async upgradePayAsYouGo(
+    id: string,
+  ): Promise<Types.UpgradePayAsYouGoMutation> {
+    const result =
+      await this.client.mutate<Types.UpgradePayAsYouGoMutation>({
+        mutation: Documents.UpgradePayAsYouGo,
+        variables: { id },
+      });
+
+    if (!result.data) {
+      throw new Error("Failed to upgrade project to Pay As You Go");
+    }
+
+    return result.data;
+  }
+
+  /**
    * Get the current user's organization.
    * Use this to get the organization identifier (Clerk org ID) for building Portal URLs.
    * @returns Organization details including identifier

@@ -191,3 +191,15 @@ export const UpdateProjectSubscription = gql`
   }
 }
     `;
+export const UpgradePayAsYouGo = gql`
+    mutation UpgradePayAsYouGo($id: ID!) {
+  upgradePayAsYouGo(id: $id) {
+    id
+    name
+    subscription {
+      identifier
+      status
+    }
+  }
+}
+    `;
