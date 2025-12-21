@@ -310,26 +310,27 @@ export class GraphlitPortalClient {
     return result.data;
   }
 
-  /**
-   * Updates a project subscription to Pay As You Go.
-   * @param id - The ID of the project
-   * @returns The updated project
-   */
-  public async upgradePayAsYouGo(
-    id: string,
-  ): Promise<Types.UpgradePayAsYouGoMutation> {
-    const result =
-      await this.client.mutate<Types.UpgradePayAsYouGoMutation>({
-        mutation: Documents.UpgradePayAsYouGo,
-        variables: { id },
-      });
+  // TODO: Uncomment when upgradePayAsYouGo mutation is deployed to production
+  // /**
+  //  * Updates a project subscription to Pay As You Go.
+  //  * @param id - The ID of the project
+  //  * @returns The updated project
+  //  */
+  // public async upgradePayAsYouGo(
+  //   id: string,
+  // ): Promise<Types.UpgradePayAsYouGoMutation> {
+  //   const result =
+  //     await this.client.mutate<Types.UpgradePayAsYouGoMutation>({
+  //       mutation: Documents.UpgradePayAsYouGo,
+  //       variables: { id },
+  //     });
 
-    if (!result.data) {
-      throw new Error("Failed to upgrade project to Pay As You Go");
-    }
+  //   if (!result.data) {
+  //     throw new Error("Failed to upgrade project to Pay As You Go");
+  //   }
 
-    return result.data;
-  }
+  //   return result.data;
+  // }
 
   /**
    * Fetch logged-in organization.

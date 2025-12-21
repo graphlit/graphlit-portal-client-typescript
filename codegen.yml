@@ -1,5 +1,5 @@
 overwrite: true
-schema: "https://portal.graphlit.io/api/v1/graphql"
+schema: "https://portal.graphlit.io/api/v1/graphql/?sdl"
 documents: "./src/documents/**/*.graphql"
 generates:
   ./src/generated/graphql-types.ts:
