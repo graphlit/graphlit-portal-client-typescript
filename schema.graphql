@@ -6,27 +6,27 @@ schema {
 "Response when creating an API key. Token is only shown once!"
 type ApiKeyCreated {
   "Unique identifier for this API key."
-  id: String
+  id: String!
   "User-provided name for the API key."
-  name: String
+  name: String!
   "The plaintext API key. This is the ONLY time you will see this value!"
-  token: String
+  token: String!
   "When the API key was created."
-  createdAt: DateTime
+  createdAt: DateTime!
 }
 
 "Metadata about an API key (does not include token)."
 type ApiKeyMetadata {
   "Unique identifier for this API key."
-  id: String
+  id: String!
   "User-provided name for the API key."
-  name: String
+  name: String!
   "When the API key was created."
-  createdAt: DateTime
+  createdAt: DateTime!
   "When the API key was last used (null if never used)."
   lastUsedAt: DateTime
   "Last 4 characters for identification."
-  lastFourChars: String
+  lastFourChars: String!
 }
 
 "Represents a boolean result."
@@ -254,7 +254,7 @@ type Organization {
   "The organization project quota limits."
   quota: OrganizationQuota
   "The API keys for programmatic access."
-  apiKeys: [ApiKeyMetadata] @authorize
+  apiKeys: [ApiKeyMetadata]
   "The organization payment methods."
   paymentMethods: [PaymentMethod] @cost(weight: "10")
   "The users that are members of the organization."
@@ -277,9 +277,9 @@ type OrganizationBilling {
 
 "Represents the organization project quota limits."
 type OrganizationQuota {
-  "The maximum number of free-tier projects."
+  "The maximum number of free-tier projects. null = default (2), 0 = unlimited, N = specific limit."
   maxFreeProjects: Int
-  "The maximum number of paid-tier projects."
+  "The maximum number of paid-tier projects. null = default (10), 0 = unlimited, N = specific limit."
   maxPaidProjects: Int
 }
 

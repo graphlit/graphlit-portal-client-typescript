@@ -156,10 +156,10 @@ export class GraphlitPortalClient {
   }
 
   /**
-   * Create a new Graphlit project.
+   * Creates a project.
    * Platform is automatically set to Azure and region to South Central US (scus).
-   * @param input - Project input with name and optional description
-   * @returns Created project details
+   * @param input - The properties for the new project (name and optional description)
+   * @returns The created project
    */
   public async createProject(
     input: CreateProjectInput,
@@ -184,9 +184,9 @@ export class GraphlitPortalClient {
   }
 
   /**
-   * Update an existing project's metadata.
-   * @param project - Project update input with id and fields to update
-   * @returns Updated project details
+   * Updates a project.
+   * @param project - The updated properties for the project
+   * @returns The updated project
    */
   public async updateProject(
     project: Types.ProjectUpdateInput,
@@ -204,9 +204,9 @@ export class GraphlitPortalClient {
   }
 
   /**
-   * Delete a project and all its data.
-   * @param id - Project ID to delete
-   * @returns Deleted project details
+   * Deletes a project.
+   * @param id - The ID of the project
+   * @returns The deleted project
    */
   public async deleteProject(id: string): Promise<Types.DeleteProjectMutation> {
     const result = await this.client.mutate<Types.DeleteProjectMutation>({
@@ -222,9 +222,9 @@ export class GraphlitPortalClient {
   }
 
   /**
-   * Get a specific project by ID.
-   * @param id - Project ID
-   * @returns Project details including quota and subscription
+   * Lookup a project given its ID.
+   * @param id - ID of the project
+   * @returns The project
    */
   public async getProject(id: string): Promise<Types.GetProjectQuery> {
     const result = await this.client.query<Types.GetProjectQuery>({
@@ -244,9 +244,9 @@ export class GraphlitPortalClient {
   }
 
   /**
-   * Query projects with optional filters.
-   * @param filter - Optional filter criteria
-   * @returns Projects matching the filter
+   * Retrieves projects based on the provided filter criteria.
+   * @param filter - The filter criteria to apply when retrieving projects
+   * @returns The project results
    */
   public async queryProjects(
     filter?: Types.ProjectFilter,
@@ -264,10 +264,9 @@ export class GraphlitPortalClient {
   }
 
   /**
-   * Get project invoices including upcoming invoice with line items.
-   * Use this to get billing-period credit usage from upcomingInvoice.lines.
-   * @param id - Project ID
-   * @returns Project invoices and upcoming invoice details
+   * Lookup a project given its ID, including subscription invoices and upcoming invoice.
+   * @param id - ID of the project
+   * @returns The project with invoices
    */
   public async getProjectInvoices(
     id: string,
@@ -289,10 +288,10 @@ export class GraphlitPortalClient {
   }
 
   /**
-   * Update a project's subscription tier.
-   * @param id - Project ID
-   * @param productIdentifier - Stripe product identifier
-   * @returns Updated project with new subscription
+   * Updates a project subscription.
+   * @param id - The ID of the project
+   * @param productIdentifier - The Stripe product identifier
+   * @returns The updated project
    */
   public async updateProjectSubscription(
     id: string,
@@ -312,9 +311,9 @@ export class GraphlitPortalClient {
   }
 
   /**
-   * Upgrade a project to a fixed Pay As You Go subscription.
-   * @param id - Project ID
-   * @returns Updated project with new subscription
+   * Updates a project subscription to Pay As You Go.
+   * @param id - The ID of the project
+   * @returns The updated project
    */
   public async upgradePayAsYouGo(
     id: string,
@@ -333,9 +332,8 @@ export class GraphlitPortalClient {
   }
 
   /**
-   * Get the current user's organization.
-   * Use this to get the organization identifier (Clerk org ID) for building Portal URLs.
-   * @returns Organization details including identifier
+   * Fetch logged-in organization.
+   * @returns The organization
    */
   public async getOrganization(): Promise<Types.GetOrganizationQuery> {
     const result = await this.client.query<Types.GetOrganizationQuery>({
