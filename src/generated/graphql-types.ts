@@ -201,6 +201,8 @@ export enum EntityState {
   Queued = 'QUEUED',
   /** Rejected */
   Rejected = 'REJECTED',
+  /** Resolved */
+  Resolved = 'RESOLVED',
   /** Restarted */
   Restarted = 'RESTARTED',
   /** Running */
@@ -264,6 +266,8 @@ export type EnvironmentFilter = {
   orderBy?: InputMaybe<OrderByTypes>;
   /** The reference to the project that the environment belongs to. */
   project?: InputMaybe<EntityReferenceFilter>;
+  /** The relevance score threshold for vector and hybrid search. Results below this threshold will be filtered out. Hybrid search defaults to 0.006. Vector search defaults to 0.54, or 0.78 for OpenAI Ada-002, or 0.61 for Google embedding models. Not applicable to keyword search. */
+  relevanceThreshold?: InputMaybe<Scalars['Float']['input']>;
   /** Filter environment(s) by searching for similar text. */
   search?: InputMaybe<Scalars['String']['input']>;
   /** Filter environment(s) by their states. */
@@ -421,6 +425,8 @@ export type MembershipFilter = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   /** The sort order for query results. */
   orderBy?: InputMaybe<OrderByTypes>;
+  /** The relevance score threshold for vector and hybrid search. Results below this threshold will be filtered out. Hybrid search defaults to 0.006. Vector search defaults to 0.54, or 0.78 for OpenAI Ada-002, or 0.61 for Google embedding models. Not applicable to keyword search. */
+  relevanceThreshold?: InputMaybe<Scalars['Float']['input']>;
   /** Filter membership(s) by searching for similar text. */
   search?: InputMaybe<Scalars['String']['input']>;
   /** Filter membership(s) by their states. */
@@ -483,6 +489,8 @@ export type Mutation = {
   updateProject?: Maybe<Project>;
   /** Updates a project subscription. */
   updateProjectSubscription?: Maybe<Project>;
+  /** Upgrades a project subscription to Pay-As-You-Go pricing. */
+  upgradePayAsYouGo?: Maybe<Project>;
 };
 
 
@@ -567,6 +575,11 @@ export type MutationUpdateProjectArgs = {
 export type MutationUpdateProjectSubscriptionArgs = {
   id: Scalars['ID']['input'];
   productIdentifier: Scalars['String']['input'];
+};
+
+
+export type MutationUpgradePayAsYouGoArgs = {
+  id: Scalars['ID']['input'];
 };
 
 /** Order by type */
@@ -663,6 +676,8 @@ export type OrganizationFilter = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   /** The sort order for query results. */
   orderBy?: InputMaybe<OrderByTypes>;
+  /** The relevance score threshold for vector and hybrid search. Results below this threshold will be filtered out. Hybrid search defaults to 0.006. Vector search defaults to 0.54, or 0.78 for OpenAI Ada-002, or 0.61 for Google embedding models. Not applicable to keyword search. */
+  relevanceThreshold?: InputMaybe<Scalars['Float']['input']>;
   /** Filter organization(s) by searching for similar text. */
   search?: InputMaybe<Scalars['String']['input']>;
   /** Filter organization(s) by their states. */
@@ -882,6 +897,8 @@ export type ProjectFilter = {
   platform?: InputMaybe<ResourceConnectorTypes>;
   /** Filter projects by their cloud platform region. */
   region?: InputMaybe<Scalars['String']['input']>;
+  /** The relevance score threshold for vector and hybrid search. Results below this threshold will be filtered out. Hybrid search defaults to 0.006. Vector search defaults to 0.54, or 0.78 for OpenAI Ada-002, or 0.61 for Google embedding models. Not applicable to keyword search. */
+  relevanceThreshold?: InputMaybe<Scalars['Float']['input']>;
   /** Filter project(s) by searching for similar text. */
   search?: InputMaybe<Scalars['String']['input']>;
   /** Filter project(s) by their states. */
@@ -1178,6 +1195,8 @@ export type UserFilter = {
   orderBy?: InputMaybe<OrderByTypes>;
   /** Filter users by their phone numbers. */
   phoneNumber?: InputMaybe<Scalars['String']['input']>;
+  /** The relevance score threshold for vector and hybrid search. Results below this threshold will be filtered out. Hybrid search defaults to 0.006. Vector search defaults to 0.54, or 0.78 for OpenAI Ada-002, or 0.61 for Google embedding models. Not applicable to keyword search. */
+  relevanceThreshold?: InputMaybe<Scalars['Float']['input']>;
   /** Filter user(s) by searching for similar text. */
   search?: InputMaybe<Scalars['String']['input']>;
   /** Filter user(s) by their states. */
