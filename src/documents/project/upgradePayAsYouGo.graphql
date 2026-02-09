@@ -1,0 +1,10 @@
+mutation UpgradePayAsYouGo($id: ID!) {
+  upgradePayAsYouGo(id: $id) {
+    id
+    name
+    subscription {
+      identifier
+      status
+    }
+  }
+}
