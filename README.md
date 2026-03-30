@@ -81,7 +81,7 @@ npm install graphlit-portal-client
 
 **Requirements:**
 
-- Node.js 18.0 or higher
+- Node.js 20.0 or higher
 - TypeScript 5.0 or higher (for TypeScript projects)
 
 ## Getting API Keys

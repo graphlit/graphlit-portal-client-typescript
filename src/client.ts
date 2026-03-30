@@ -169,6 +169,7 @@ export class GraphlitPortalClient {
       description: input.description,
       platform: Types.ResourceConnectorTypes.Azure,
       region: "southcentralus",
+      quota: input.quota,
     };
 
     const result = await this.client.mutate<Types.CreateProjectMutation>({

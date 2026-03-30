@@ -14,11 +14,13 @@ query QueryProjects($filter: ProjectFilter) {
         id
       }
       quota {
-        credits
-        contents
-        feeds
-        conversations
         storage
+        contents
+        credits
+        feeds
+        posts
+        conversations
+        userCredits
       }
       environments {
         id

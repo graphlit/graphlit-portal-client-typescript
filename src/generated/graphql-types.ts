@@ -189,6 +189,8 @@ export enum EntityState {
   Ingested = 'INGESTED',
   /** Initialized */
   Initialized = 'INITIALIZED',
+  /** Limited */
+  Limited = 'LIMITED',
   /** Opened */
   Opened = 'OPENED',
   /** Paused */
@@ -913,6 +915,8 @@ export type ProjectInput = {
   name: Scalars['String']['input'];
   /** The cloud platform (Azure, AWS, GCP) where project will be provisioned. */
   platform: ResourceConnectorTypes;
+  /** The project quota. Only applicable for internal organizations. */
+  quota?: InputMaybe<ProjectQuotaInput>;
   /** The cloud platform region where project will be provisioned. */
   region: Scalars['String']['input'];
 };
@@ -932,6 +936,26 @@ export type ProjectQuota = {
   posts?: Maybe<Scalars['Int']['output']>;
   /** The storage quota, in bytes. */
   storage?: Maybe<Scalars['Long']['output']>;
+  /** The maximum number of credits which can be accrued per user. */
+  userCredits?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Represents the project quota. */
+export type ProjectQuotaInput = {
+  /** The maximum number of contents which can be ingested. */
+  contents?: InputMaybe<Scalars['Int']['input']>;
+  /** The maximum number of conversations which can be created. */
+  conversations?: InputMaybe<Scalars['Int']['input']>;
+  /** The maximum number of credits which can be accrued. */
+  credits?: InputMaybe<Scalars['Int']['input']>;
+  /** The maximum number of feeds which can be created. */
+  feeds?: InputMaybe<Scalars['Int']['input']>;
+  /** The maximum number of posts which can be read by feeds. */
+  posts?: InputMaybe<Scalars['Int']['input']>;
+  /** The storage quota, in bytes. */
+  storage?: InputMaybe<Scalars['Long']['input']>;
+  /** The maximum number of credits which can be accrued per user. */
+  userCredits?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** Represents a project region. */
@@ -960,6 +984,8 @@ export type ProjectUpdateInput = {
   id: Scalars['ID']['input'];
   /** The name of the project. */
   name?: InputMaybe<Scalars['String']['input']>;
+  /** The project quota. Only applicable for internal organizations. */
+  quota?: InputMaybe<ProjectQuotaInput>;
 };
 
 export type Query = {
@@ -1096,6 +1122,8 @@ export type Subscription = {
   periodEndDate?: Maybe<Scalars['Date']['output']>;
   /** The subscription period start date. */
   periodStartDate?: Maybe<Scalars['Date']['output']>;
+  /** The subscribed product identifier. */
+  productIdentifier?: Maybe<Scalars['String']['output']>;
   /** The subscribed products. */
   products?: Maybe<Array<Product>>;
   /** The subscription start date. */
@@ -1255,7 +1283,7 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null } | null };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, quota?: { __typename?: 'ProjectQuota', storage?: any | null, contents?: number | null, credits?: number | null, feeds?: number | null, posts?: number | null, conversations?: number | null, userCredits?: number | null } | null } | null };
 
 export type DeleteProjectMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -1269,7 +1297,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string }, quota?: { __typename?: 'ProjectQuota', credits?: number | null, contents?: number | null, feeds?: number | null, conversations?: number | null, storage?: any | null } | null, environments?: Array<{ __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null } | null> | null, subscription?: { __typename?: 'Subscription', status?: SubscriptionStatus | null, identifier?: string | null, description?: string | null, products?: Array<{ __typename?: 'Product', name?: string | null, identifier?: string | null }> | null } | null } | null };
+export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string }, quota?: { __typename?: 'ProjectQuota', storage?: any | null, contents?: number | null, credits?: number | null, feeds?: number | null, posts?: number | null, conversations?: number | null, userCredits?: number | null } | null, environments?: Array<{ __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null } | null> | null, subscription?: { __typename?: 'Subscription', status?: SubscriptionStatus | null, identifier?: string | null, description?: string | null, products?: Array<{ __typename?: 'Product', name?: string | null, identifier?: string | null }> | null } | null } | null };
 
 export type GetProjectInvoicesQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -1283,14 +1311,14 @@ export type QueryProjectsQueryVariables = Exact<{
 }>;
 
 
-export type QueryProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectResults', results?: Array<{ __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string }, quota?: { __typename?: 'ProjectQuota', credits?: number | null, contents?: number | null, feeds?: number | null, conversations?: number | null, storage?: any | null } | null, environments?: Array<{ __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null } | null> | null, subscription?: { __typename?: 'Subscription', status?: SubscriptionStatus | null, identifier?: string | null, description?: string | null, products?: Array<{ __typename?: 'Product', name?: string | null, identifier?: string | null }> | null } | null }> | null } | null };
+export type QueryProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectResults', results?: Array<{ __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string }, quota?: { __typename?: 'ProjectQuota', storage?: any | null, contents?: number | null, credits?: number | null, feeds?: number | null, posts?: number | null, conversations?: number | null, userCredits?: number | null } | null, environments?: Array<{ __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null } | null> | null, subscription?: { __typename?: 'Subscription', status?: SubscriptionStatus | null, identifier?: string | null, description?: string | null, products?: Array<{ __typename?: 'Product', name?: string | null, identifier?: string | null }> | null } | null }> | null } | null };
 
 export type UpdateProjectMutationVariables = Exact<{
   project: ProjectUpdateInput;
 }>;
 
 
-export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null } | null };
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, quota?: { __typename?: 'ProjectQuota', storage?: any | null, contents?: number | null, credits?: number | null, feeds?: number | null, posts?: number | null, conversations?: number | null, userCredits?: number | null } | null } | null };
 
 export type UpdateProjectSubscriptionMutationVariables = Exact<{
   id: Scalars['ID']['input'];

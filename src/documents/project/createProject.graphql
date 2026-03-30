@@ -7,6 +7,15 @@ mutation CreateProject($project: ProjectInput!) {
     platform
     region
     uri
+    quota {
+      storage
+      contents
+      credits
+      feeds
+      posts
+      conversations
+      userCredits
+    }
     creationDate
     modifiedDate
   }

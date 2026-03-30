@@ -21,6 +21,15 @@ export const CreateProject = gql`
     platform
     region
     uri
+    quota {
+      storage
+      contents
+      credits
+      feeds
+      posts
+      conversations
+      userCredits
+    }
     creationDate
     modifiedDate
   }
@@ -51,11 +60,13 @@ export const GetProject = gql`
       id
     }
     quota {
-      credits
-      contents
-      feeds
-      conversations
       storage
+      contents
+      credits
+      feeds
+      posts
+      conversations
+      userCredits
     }
     environments {
       id
@@ -137,11 +148,13 @@ export const QueryProjects = gql`
         id
       }
       quota {
-        credits
-        contents
-        feeds
-        conversations
         storage
+        contents
+        credits
+        feeds
+        posts
+        conversations
+        userCredits
       }
       environments {
         id
@@ -174,6 +187,15 @@ export const UpdateProject = gql`
     platform
     region
     uri
+    quota {
+      storage
+      contents
+      credits
+      feeds
+      posts
+      conversations
+      userCredits
+    }
     creationDate
     modifiedDate
   }
