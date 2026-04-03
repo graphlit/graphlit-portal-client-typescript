@@ -217,6 +217,15 @@ await client.updateProjectSubscription("project-id", "prod_enterprise_monthly");
 console.log("Subscription upgraded to Enterprise");
 ```
 
+### Upgrading to Pay As You Go
+
+```typescript
+// Upgrade project to Pay As You Go
+const result = await client.upgradePayAsYouGo("project-id");
+
+console.log(`Upgraded: ${result.upgradePayAsYouGo?.name}`);
+```
+
 ### Deleting a Project
 
 ```typescript
@@ -355,6 +364,29 @@ await client.updateProjectSubscription(
 
 ---
 
+#### `upgradePayAsYouGo(id: string): Promise<UpgradePayAsYouGoMutation>`
+
+Upgrade a project's subscription to Pay As You Go.
+
+**Note:** Pay As You Go requires at least one paid project at Starter tier or higher.
+
+**Parameters:**
+
+- `id` (string, required) - Project ID
+
+**Returns:** Updated project with `id`, `name`, and `subscription` details
+
+**Example:**
+
+```typescript
+const result = await client.upgradePayAsYouGo("proj_abc123");
+
+console.log(`Upgraded: ${result.upgradePayAsYouGo?.name}`);
+console.log(`Subscription: ${result.upgradePayAsYouGo?.subscription?.identifier}`);
+```
+
+---
+
 ## API Endpoint
 
 The SDK connects to the Graphlit Portal API at:
@@ -461,6 +493,7 @@ import type {
   CreateProjectMutation,
   UpdateProjectMutation,
   DeleteProjectMutation,
+  UpgradePayAsYouGoMutation,
 
   // Query results
   GetProjectQuery,
