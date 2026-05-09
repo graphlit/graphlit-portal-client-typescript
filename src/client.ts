@@ -265,6 +265,217 @@ export class GraphlitPortalClient {
   }
 
   /**
+   * Creates a service client for an environment.
+   * @param id - The ID of the environment
+   * @param input - The properties for the new service client
+   * @returns The updated environment
+   */
+  public async createServiceClient(
+    id: string,
+    input: Types.ServiceClientInput,
+  ): Promise<Types.CreateServiceClientMutation> {
+    const result = await this.client.mutate<Types.CreateServiceClientMutation>({
+      mutation: Documents.CreateServiceClient,
+      variables: { id, input },
+    });
+
+    if (!result.data) {
+      throw new Error("Failed to create service client");
+    }
+
+    return result.data;
+  }
+
+  /**
+   * Updates a service client for an environment.
+   * @param id - The ID of the environment
+   * @param clientId - The service client identifier
+   * @param input - The updated service client properties
+   * @returns The updated environment
+   */
+  public async updateServiceClient(
+    id: string,
+    clientId: string,
+    input: Types.ServiceClientUpdateInput,
+  ): Promise<Types.UpdateServiceClientMutation> {
+    const result = await this.client.mutate<Types.UpdateServiceClientMutation>({
+      mutation: Documents.UpdateServiceClient,
+      variables: { id, clientId, input },
+    });
+
+    if (!result.data) {
+      throw new Error("Failed to update service client");
+    }
+
+    return result.data;
+  }
+
+  /**
+   * Enables a service client for an environment.
+   * @param id - The ID of the environment
+   * @param clientId - The service client identifier
+   * @returns The updated environment
+   */
+  public async enableServiceClient(
+    id: string,
+    clientId: string,
+  ): Promise<Types.EnableServiceClientMutation> {
+    const result = await this.client.mutate<Types.EnableServiceClientMutation>({
+      mutation: Documents.EnableServiceClient,
+      variables: { id, clientId },
+    });
+
+    if (!result.data) {
+      throw new Error("Failed to enable service client");
+    }
+
+    return result.data;
+  }
+
+  /**
+   * Disables a service client for an environment.
+   * @param id - The ID of the environment
+   * @param clientId - The service client identifier
+   * @returns The updated environment
+   */
+  public async disableServiceClient(
+    id: string,
+    clientId: string,
+  ): Promise<Types.DisableServiceClientMutation> {
+    const result = await this.client.mutate<Types.DisableServiceClientMutation>({
+      mutation: Documents.DisableServiceClient,
+      variables: { id, clientId },
+    });
+
+    if (!result.data) {
+      throw new Error("Failed to disable service client");
+    }
+
+    return result.data;
+  }
+
+  /**
+   * Revokes a service client for an environment.
+   * @param id - The ID of the environment
+   * @param clientId - The service client identifier
+   * @returns The updated environment
+   */
+  public async revokeServiceClient(
+    id: string,
+    clientId: string,
+  ): Promise<Types.RevokeServiceClientMutation> {
+    const result = await this.client.mutate<Types.RevokeServiceClientMutation>({
+      mutation: Documents.RevokeServiceClient,
+      variables: { id, clientId },
+    });
+
+    if (!result.data) {
+      throw new Error("Failed to revoke service client");
+    }
+
+    return result.data;
+  }
+
+  /**
+   * Adds a key to a service client for an environment.
+   * @param id - The ID of the environment
+   * @param clientId - The service client identifier
+   * @param key - The public key to add
+   * @returns The updated environment
+   */
+  public async addServiceClientKey(
+    id: string,
+    clientId: string,
+    key: Types.ServiceClientKeyInput,
+  ): Promise<Types.AddServiceClientKeyMutation> {
+    const result = await this.client.mutate<Types.AddServiceClientKeyMutation>({
+      mutation: Documents.AddServiceClientKey,
+      variables: { id, clientId, key },
+    });
+
+    if (!result.data) {
+      throw new Error("Failed to add service client key");
+    }
+
+    return result.data;
+  }
+
+  /**
+   * Enables a service client key for an environment.
+   * @param id - The ID of the environment
+   * @param clientId - The service client identifier
+   * @param kid - The key identifier
+   * @returns The updated environment
+   */
+  public async enableServiceClientKey(
+    id: string,
+    clientId: string,
+    kid: string,
+  ): Promise<Types.EnableServiceClientKeyMutation> {
+    const result =
+      await this.client.mutate<Types.EnableServiceClientKeyMutation>({
+        mutation: Documents.EnableServiceClientKey,
+        variables: { id, clientId, kid },
+      });
+
+    if (!result.data) {
+      throw new Error("Failed to enable service client key");
+    }
+
+    return result.data;
+  }
+
+  /**
+   * Disables a service client key for an environment.
+   * @param id - The ID of the environment
+   * @param clientId - The service client identifier
+   * @param kid - The key identifier
+   * @returns The updated environment
+   */
+  public async disableServiceClientKey(
+    id: string,
+    clientId: string,
+    kid: string,
+  ): Promise<Types.DisableServiceClientKeyMutation> {
+    const result =
+      await this.client.mutate<Types.DisableServiceClientKeyMutation>({
+        mutation: Documents.DisableServiceClientKey,
+        variables: { id, clientId, kid },
+      });
+
+    if (!result.data) {
+      throw new Error("Failed to disable service client key");
+    }
+
+    return result.data;
+  }
+
+  /**
+   * Revokes a service client key for an environment.
+   * @param id - The ID of the environment
+   * @param clientId - The service client identifier
+   * @param kid - The key identifier
+   * @returns The updated environment
+   */
+  public async revokeServiceClientKey(
+    id: string,
+    clientId: string,
+    kid: string,
+  ): Promise<Types.RevokeServiceClientKeyMutation> {
+    const result =
+      await this.client.mutate<Types.RevokeServiceClientKeyMutation>({
+        mutation: Documents.RevokeServiceClientKey,
+        variables: { id, clientId, kid },
+      });
+
+    if (!result.data) {
+      throw new Error("Failed to revoke service client key");
+    }
+
+    return result.data;
+  }
+
+  /**
    * Lookup a project given its ID, including subscription invoices and upcoming invoice.
    * @param id - ID of the project
    * @returns The project with invoices
