@@ -236,6 +236,8 @@ export type Environment = {
   region?: Maybe<Scalars['String']['output']>;
   /** The relevance score of the environment. */
   relevance?: Maybe<Scalars['Float']['output']>;
+  /** The service clients associated with the environment. */
+  serviceClients?: Maybe<Array<Maybe<ServiceClient>>>;
   /** The state of the environment (i.e. created, finished). */
   state: EntityState;
   /** The type of environment (development, production). */
@@ -459,20 +461,32 @@ export type MembershipUpdateInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Adds a key to a service client for an environment. */
+  addServiceClientKey?: Maybe<Environment>;
   /** Creates a new API key for programmatic access. */
   createApiKey?: Maybe<ApiKeyCreated>;
   /** Creates a project environment. */
   createEnvironment?: Maybe<Environment>;
   /** Creates a project. */
   createProject?: Maybe<Project>;
+  /** Creates a service client for an environment. */
+  createServiceClient?: Maybe<Environment>;
   /** Deletes a project environment. */
   deleteEnvironment?: Maybe<Environment>;
   /** Deletes a project. */
   deleteProject?: Maybe<Project>;
   /** Disables a project. */
   disableProject?: Maybe<Project>;
+  /** Disables a service client for an environment. */
+  disableServiceClient?: Maybe<Environment>;
+  /** Disables a service client key for an environment. */
+  disableServiceClientKey?: Maybe<Environment>;
   /** Enables a project. */
   enableProject?: Maybe<Project>;
+  /** Enables a service client for an environment. */
+  enableServiceClient?: Maybe<Environment>;
+  /** Enables a service client key for an environment. */
+  enableServiceClientKey?: Maybe<Environment>;
   /** Fixes an organization. */
   fixOrganization?: Maybe<Organization>;
   /** Fix a project. */
@@ -483,6 +497,10 @@ export type Mutation = {
   regenerateEnvironmentSecret?: Maybe<Environment>;
   /** Revokes an API key. */
   revokeApiKey?: Maybe<Organization>;
+  /** Revokes a service client for an environment. */
+  revokeServiceClient?: Maybe<Environment>;
+  /** Revokes a service client key for an environment. */
+  revokeServiceClientKey?: Maybe<Environment>;
   /** Setup organization billing. */
   setupOrganizationBilling?: Maybe<OrganizationBilling>;
   /** Updates a project environment. */
@@ -491,8 +509,17 @@ export type Mutation = {
   updateProject?: Maybe<Project>;
   /** Updates a project subscription. */
   updateProjectSubscription?: Maybe<Project>;
+  /** Updates a service client for an environment. */
+  updateServiceClient?: Maybe<Environment>;
   /** Upgrades a project subscription to Pay-As-You-Go pricing. */
   upgradePayAsYouGo?: Maybe<Project>;
+};
+
+
+export type MutationAddServiceClientKeyArgs = {
+  clientId: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  key: ServiceClientKeyInput;
 };
 
 
@@ -511,6 +538,12 @@ export type MutationCreateProjectArgs = {
 };
 
 
+export type MutationCreateServiceClientArgs = {
+  id: Scalars['ID']['input'];
+  input: ServiceClientInput;
+};
+
+
 export type MutationDeleteEnvironmentArgs = {
   id: Scalars['ID']['input'];
 };
@@ -526,8 +559,34 @@ export type MutationDisableProjectArgs = {
 };
 
 
+export type MutationDisableServiceClientArgs = {
+  clientId: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDisableServiceClientKeyArgs = {
+  clientId: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  kid: Scalars['String']['input'];
+};
+
+
 export type MutationEnableProjectArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationEnableServiceClientArgs = {
+  clientId: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationEnableServiceClientKeyArgs = {
+  clientId: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  kid: Scalars['String']['input'];
 };
 
 
@@ -558,6 +617,19 @@ export type MutationRevokeApiKeyArgs = {
 };
 
 
+export type MutationRevokeServiceClientArgs = {
+  clientId: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationRevokeServiceClientKeyArgs = {
+  clientId: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  kid: Scalars['String']['input'];
+};
+
+
 export type MutationSetupOrganizationBillingArgs = {
   cancelUri: Scalars['URL']['input'];
   successUri: Scalars['URL']['input'];
@@ -577,6 +649,13 @@ export type MutationUpdateProjectArgs = {
 export type MutationUpdateProjectSubscriptionArgs = {
   id: Scalars['ID']['input'];
   productIdentifier: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateServiceClientArgs = {
+  clientId: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  input: ServiceClientUpdateInput;
 };
 
 
@@ -1089,6 +1168,124 @@ export enum RoleTypes {
   SystemAdministrator = 'SYSTEM_ADMINISTRATOR'
 }
 
+/** Represents an environment service client. */
+export type ServiceClient = {
+  __typename?: 'ServiceClient';
+  /** The generated OAuth client identifier. */
+  clientId: Scalars['String']['output'];
+  /** When the service client was created. */
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  /** The public signing keys for the service client. */
+  keys?: Maybe<Array<ServiceClientKey>>;
+  /** The name of the service client. */
+  name: Scalars['String']['output'];
+  /** The service client profile. */
+  profile?: Maybe<ServiceClientProfileTypes>;
+  /** The role assigned to service client tokens. */
+  role?: Maybe<RoleTypes>;
+  /** The authorized service client scopes. */
+  scopes?: Maybe<Array<ServiceClientScopeTypes>>;
+  /** The service client state. */
+  state?: Maybe<ServiceClientStateTypes>;
+};
+
+/** Represents a service client. */
+export type ServiceClientInput = {
+  /** The public signing keys for the service client. */
+  keys: Array<ServiceClientKeyInput>;
+  /** The name of the service client. */
+  name: Scalars['String']['input'];
+  /** The service client profile. */
+  profile?: InputMaybe<ServiceClientProfileTypes>;
+  /** The role assigned to service client tokens. */
+  role?: InputMaybe<RoleTypes>;
+  /** The authorized service client scopes. */
+  scopes?: InputMaybe<Array<ServiceClientScopeTypes>>;
+};
+
+/** Represents a service client public signing key. */
+export type ServiceClientKey = {
+  __typename?: 'ServiceClientKey';
+  /** The signing algorithm. */
+  alg: Scalars['String']['output'];
+  /** When the service client key was created. */
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  /** The key identifier used by JWT headers. */
+  kid: Scalars['String']['output'];
+  /** The JWK key type. */
+  kty: Scalars['String']['output'];
+  /** The optional name of the service client key. */
+  name?: Maybe<Scalars['String']['output']>;
+  /** The public JWK JSON. */
+  publicJwk: Scalars['String']['output'];
+  /** The public key fingerprint. */
+  publicKeyFingerprint: Scalars['String']['output'];
+  /** The service client key state. */
+  state?: Maybe<ServiceClientKeyStateTypes>;
+  /** The public key use. */
+  use: Scalars['String']['output'];
+};
+
+/** Represents a service client public signing key. */
+export type ServiceClientKeyInput = {
+  /** The optional name of the service client key. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** The public JWK JSON. */
+  publicJwk: Scalars['String']['input'];
+};
+
+/** Service client key state */
+export enum ServiceClientKeyStateTypes {
+  /** Disabled */
+  Disabled = 'DISABLED',
+  /** Enabled */
+  Enabled = 'ENABLED',
+  /** Revoked */
+  Revoked = 'REVOKED'
+}
+
+/** Service client profile type */
+export enum ServiceClientProfileTypes {
+  /** Full */
+  Full = 'FULL',
+  /** Memory */
+  Memory = 'MEMORY',
+  /** Retrieval */
+  Retrieval = 'RETRIEVAL',
+  /** Standard */
+  Standard = 'STANDARD'
+}
+
+/** Service client scope type */
+export enum ServiceClientScopeTypes {
+  /** Read */
+  Read = 'READ',
+  /** Write */
+  Write = 'WRITE'
+}
+
+/** Service client state */
+export enum ServiceClientStateTypes {
+  /** Disabled */
+  Disabled = 'DISABLED',
+  /** Enabled */
+  Enabled = 'ENABLED',
+  /** Revoked */
+  Revoked = 'REVOKED'
+}
+
+/** Represents a service client update. */
+export type ServiceClientUpdateInput = {
+  /** The name of the service client. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** The service client profile. */
+  profile?: InputMaybe<ServiceClientProfileTypes>;
+  /** The role assigned to service client tokens. */
+  role?: InputMaybe<RoleTypes>;
+  /** The authorized service client scopes. */
+  scopes?: InputMaybe<Array<ServiceClientScopeTypes>>;
+};
+
 /** Represents a Stripe setup intent for saving payment methods. */
 export type SetupIntent = {
   __typename?: 'SetupIntent';
@@ -1278,12 +1475,29 @@ export type GetOrganizationQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetOrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', id: string, name: string, identifier?: string | null, state: EntityState, creationDate: any } | null };
 
+export type AddServiceClientKeyMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  clientId: Scalars['String']['input'];
+  key: ServiceClientKeyInput;
+}>;
+
+
+export type AddServiceClientKeyMutation = { __typename?: 'Mutation', addServiceClientKey?: { __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null, serviceClients?: Array<{ __typename?: 'ServiceClient', name: string, clientId: string, scopes?: Array<ServiceClientScopeTypes> | null, profile?: ServiceClientProfileTypes | null, role?: RoleTypes | null, state?: ServiceClientStateTypes | null, createdAt?: any | null, keys?: Array<{ __typename?: 'ServiceClientKey', name?: string | null, kid: string, kty: string, alg: string, use: string, publicJwk: string, publicKeyFingerprint: string, state?: ServiceClientKeyStateTypes | null, createdAt?: any | null }> | null } | null> | null } | null };
+
 export type CreateProjectMutationVariables = Exact<{
   project: ProjectInput;
 }>;
 
 
 export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, quota?: { __typename?: 'ProjectQuota', storage?: any | null, contents?: number | null, credits?: number | null, feeds?: number | null, posts?: number | null, conversations?: number | null, userCredits?: number | null } | null } | null };
+
+export type CreateServiceClientMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  input: ServiceClientInput;
+}>;
+
+
+export type CreateServiceClientMutation = { __typename?: 'Mutation', createServiceClient?: { __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null, serviceClients?: Array<{ __typename?: 'ServiceClient', name: string, clientId: string, scopes?: Array<ServiceClientScopeTypes> | null, profile?: ServiceClientProfileTypes | null, role?: RoleTypes | null, state?: ServiceClientStateTypes | null, createdAt?: any | null, keys?: Array<{ __typename?: 'ServiceClientKey', name?: string | null, kid: string, kty: string, alg: string, use: string, publicJwk: string, publicKeyFingerprint: string, state?: ServiceClientKeyStateTypes | null, createdAt?: any | null }> | null } | null> | null } | null };
 
 export type DeleteProjectMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -1292,12 +1506,46 @@ export type DeleteProjectMutationVariables = Exact<{
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject?: { __typename?: 'Project', id: string, name: string, state: EntityState } | null };
 
+export type DisableServiceClientMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  clientId: Scalars['String']['input'];
+}>;
+
+
+export type DisableServiceClientMutation = { __typename?: 'Mutation', disableServiceClient?: { __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null, serviceClients?: Array<{ __typename?: 'ServiceClient', name: string, clientId: string, scopes?: Array<ServiceClientScopeTypes> | null, profile?: ServiceClientProfileTypes | null, role?: RoleTypes | null, state?: ServiceClientStateTypes | null, createdAt?: any | null, keys?: Array<{ __typename?: 'ServiceClientKey', name?: string | null, kid: string, kty: string, alg: string, use: string, publicJwk: string, publicKeyFingerprint: string, state?: ServiceClientKeyStateTypes | null, createdAt?: any | null }> | null } | null> | null } | null };
+
+export type DisableServiceClientKeyMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  clientId: Scalars['String']['input'];
+  kid: Scalars['String']['input'];
+}>;
+
+
+export type DisableServiceClientKeyMutation = { __typename?: 'Mutation', disableServiceClientKey?: { __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null, serviceClients?: Array<{ __typename?: 'ServiceClient', name: string, clientId: string, scopes?: Array<ServiceClientScopeTypes> | null, profile?: ServiceClientProfileTypes | null, role?: RoleTypes | null, state?: ServiceClientStateTypes | null, createdAt?: any | null, keys?: Array<{ __typename?: 'ServiceClientKey', name?: string | null, kid: string, kty: string, alg: string, use: string, publicJwk: string, publicKeyFingerprint: string, state?: ServiceClientKeyStateTypes | null, createdAt?: any | null }> | null } | null> | null } | null };
+
+export type EnableServiceClientMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  clientId: Scalars['String']['input'];
+}>;
+
+
+export type EnableServiceClientMutation = { __typename?: 'Mutation', enableServiceClient?: { __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null, serviceClients?: Array<{ __typename?: 'ServiceClient', name: string, clientId: string, scopes?: Array<ServiceClientScopeTypes> | null, profile?: ServiceClientProfileTypes | null, role?: RoleTypes | null, state?: ServiceClientStateTypes | null, createdAt?: any | null, keys?: Array<{ __typename?: 'ServiceClientKey', name?: string | null, kid: string, kty: string, alg: string, use: string, publicJwk: string, publicKeyFingerprint: string, state?: ServiceClientKeyStateTypes | null, createdAt?: any | null }> | null } | null> | null } | null };
+
+export type EnableServiceClientKeyMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  clientId: Scalars['String']['input'];
+  kid: Scalars['String']['input'];
+}>;
+
+
+export type EnableServiceClientKeyMutation = { __typename?: 'Mutation', enableServiceClientKey?: { __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null, serviceClients?: Array<{ __typename?: 'ServiceClient', name: string, clientId: string, scopes?: Array<ServiceClientScopeTypes> | null, profile?: ServiceClientProfileTypes | null, role?: RoleTypes | null, state?: ServiceClientStateTypes | null, createdAt?: any | null, keys?: Array<{ __typename?: 'ServiceClientKey', name?: string | null, kid: string, kty: string, alg: string, use: string, publicJwk: string, publicKeyFingerprint: string, state?: ServiceClientKeyStateTypes | null, createdAt?: any | null }> | null } | null> | null } | null };
+
 export type GetProjectQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string }, quota?: { __typename?: 'ProjectQuota', storage?: any | null, contents?: number | null, credits?: number | null, feeds?: number | null, posts?: number | null, conversations?: number | null, userCredits?: number | null } | null, environments?: Array<{ __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null } | null> | null, subscription?: { __typename?: 'Subscription', status?: SubscriptionStatus | null, identifier?: string | null, description?: string | null, products?: Array<{ __typename?: 'Product', name?: string | null, identifier?: string | null }> | null } | null } | null };
+export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string }, quota?: { __typename?: 'ProjectQuota', storage?: any | null, contents?: number | null, credits?: number | null, feeds?: number | null, posts?: number | null, conversations?: number | null, userCredits?: number | null } | null, environments?: Array<{ __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null, serviceClients?: Array<{ __typename?: 'ServiceClient', name: string, clientId: string, scopes?: Array<ServiceClientScopeTypes> | null, profile?: ServiceClientProfileTypes | null, role?: RoleTypes | null, state?: ServiceClientStateTypes | null, createdAt?: any | null, keys?: Array<{ __typename?: 'ServiceClientKey', name?: string | null, kid: string, kty: string, alg: string, use: string, publicJwk: string, publicKeyFingerprint: string, state?: ServiceClientKeyStateTypes | null, createdAt?: any | null }> | null } | null> | null } | null> | null, subscription?: { __typename?: 'Subscription', status?: SubscriptionStatus | null, identifier?: string | null, description?: string | null, products?: Array<{ __typename?: 'Product', name?: string | null, identifier?: string | null }> | null } | null } | null };
 
 export type GetProjectInvoicesQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -1313,6 +1561,23 @@ export type QueryProjectsQueryVariables = Exact<{
 
 export type QueryProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectResults', results?: Array<{ __typename?: 'Project', id: string, name: string, description?: string | null, state: EntityState, platform?: ResourceConnectorTypes | null, region?: string | null, uri?: string | null, creationDate: any, modifiedDate?: any | null, owner: { __typename?: 'Owner', id: string }, quota?: { __typename?: 'ProjectQuota', storage?: any | null, contents?: number | null, credits?: number | null, feeds?: number | null, posts?: number | null, conversations?: number | null, userCredits?: number | null } | null, environments?: Array<{ __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null } | null> | null, subscription?: { __typename?: 'Subscription', status?: SubscriptionStatus | null, identifier?: string | null, description?: string | null, products?: Array<{ __typename?: 'Product', name?: string | null, identifier?: string | null }> | null } | null }> | null } | null };
 
+export type RevokeServiceClientMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  clientId: Scalars['String']['input'];
+}>;
+
+
+export type RevokeServiceClientMutation = { __typename?: 'Mutation', revokeServiceClient?: { __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null, serviceClients?: Array<{ __typename?: 'ServiceClient', name: string, clientId: string, scopes?: Array<ServiceClientScopeTypes> | null, profile?: ServiceClientProfileTypes | null, role?: RoleTypes | null, state?: ServiceClientStateTypes | null, createdAt?: any | null, keys?: Array<{ __typename?: 'ServiceClientKey', name?: string | null, kid: string, kty: string, alg: string, use: string, publicJwk: string, publicKeyFingerprint: string, state?: ServiceClientKeyStateTypes | null, createdAt?: any | null }> | null } | null> | null } | null };
+
+export type RevokeServiceClientKeyMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  clientId: Scalars['String']['input'];
+  kid: Scalars['String']['input'];
+}>;
+
+
+export type RevokeServiceClientKeyMutation = { __typename?: 'Mutation', revokeServiceClientKey?: { __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null, serviceClients?: Array<{ __typename?: 'ServiceClient', name: string, clientId: string, scopes?: Array<ServiceClientScopeTypes> | null, profile?: ServiceClientProfileTypes | null, role?: RoleTypes | null, state?: ServiceClientStateTypes | null, createdAt?: any | null, keys?: Array<{ __typename?: 'ServiceClientKey', name?: string | null, kid: string, kty: string, alg: string, use: string, publicJwk: string, publicKeyFingerprint: string, state?: ServiceClientKeyStateTypes | null, createdAt?: any | null }> | null } | null> | null } | null };
+
 export type UpdateProjectMutationVariables = Exact<{
   project: ProjectUpdateInput;
 }>;
@@ -1327,6 +1592,15 @@ export type UpdateProjectSubscriptionMutationVariables = Exact<{
 
 
 export type UpdateProjectSubscriptionMutation = { __typename?: 'Mutation', updateProjectSubscription?: { __typename?: 'Project', id: string, name: string, subscription?: { __typename?: 'Subscription', identifier?: string | null, status?: SubscriptionStatus | null } | null } | null };
+
+export type UpdateServiceClientMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  clientId: Scalars['String']['input'];
+  input: ServiceClientUpdateInput;
+}>;
+
+
+export type UpdateServiceClientMutation = { __typename?: 'Mutation', updateServiceClient?: { __typename?: 'Environment', id: string, name: string, type?: EnvironmentTypes | null, state: EntityState, jwtSecret?: string | null, uri?: string | null, serviceClients?: Array<{ __typename?: 'ServiceClient', name: string, clientId: string, scopes?: Array<ServiceClientScopeTypes> | null, profile?: ServiceClientProfileTypes | null, role?: RoleTypes | null, state?: ServiceClientStateTypes | null, createdAt?: any | null, keys?: Array<{ __typename?: 'ServiceClientKey', name?: string | null, kid: string, kty: string, alg: string, use: string, publicJwk: string, publicKeyFingerprint: string, state?: ServiceClientKeyStateTypes | null, createdAt?: any | null }> | null } | null> | null } | null };
 
 export type UpgradePayAsYouGoMutationVariables = Exact<{
   id: Scalars['ID']['input'];

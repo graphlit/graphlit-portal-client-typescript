@@ -1,0 +1,30 @@
+mutation EnableServiceClientKey($id: ID!, $clientId: String!, $kid: String!) {
+  enableServiceClientKey(id: $id, clientId: $clientId, kid: $kid) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+mutation AddServiceClientKey($id: ID!, $clientId: String!, $key: ServiceClientKeyInput!) {
+  addServiceClientKey(id: $id, clientId: $clientId, key: $key) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}

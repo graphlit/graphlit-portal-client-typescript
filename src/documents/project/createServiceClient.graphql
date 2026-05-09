@@ -1,0 +1,30 @@
+mutation CreateServiceClient($id: ID!, $input: ServiceClientInput!) {
+  createServiceClient(id: $id, input: $input) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}

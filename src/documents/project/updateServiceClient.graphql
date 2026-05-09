@@ -1,0 +1,30 @@
+mutation UpdateServiceClient($id: ID!, $clientId: String!, $input: ServiceClientUpdateInput!) {
+  updateServiceClient(id: $id, clientId: $clientId, input: $input) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}

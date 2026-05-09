@@ -11,6 +11,38 @@ export const GetOrganization = gql`
   }
 }
     `;
+export const AddServiceClientKey = gql`
+    mutation AddServiceClientKey($id: ID!, $clientId: String!, $key: ServiceClientKeyInput!) {
+  addServiceClientKey(id: $id, clientId: $clientId, key: $key) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}
+    `;
 export const CreateProject = gql`
     mutation CreateProject($project: ProjectInput!) {
   createProject(project: $project) {
@@ -35,12 +67,172 @@ export const CreateProject = gql`
   }
 }
     `;
+export const CreateServiceClient = gql`
+    mutation CreateServiceClient($id: ID!, $input: ServiceClientInput!) {
+  createServiceClient(id: $id, input: $input) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}
+    `;
 export const DeleteProject = gql`
     mutation DeleteProject($id: ID!) {
   deleteProject(id: $id) {
     id
     name
     state
+  }
+}
+    `;
+export const DisableServiceClient = gql`
+    mutation DisableServiceClient($id: ID!, $clientId: String!) {
+  disableServiceClient(id: $id, clientId: $clientId) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}
+    `;
+export const DisableServiceClientKey = gql`
+    mutation DisableServiceClientKey($id: ID!, $clientId: String!, $kid: String!) {
+  disableServiceClientKey(id: $id, clientId: $clientId, kid: $kid) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}
+    `;
+export const EnableServiceClient = gql`
+    mutation EnableServiceClient($id: ID!, $clientId: String!) {
+  enableServiceClient(id: $id, clientId: $clientId) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}
+    `;
+export const EnableServiceClientKey = gql`
+    mutation EnableServiceClientKey($id: ID!, $clientId: String!, $kid: String!) {
+  enableServiceClientKey(id: $id, clientId: $clientId, kid: $kid) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
   }
 }
     `;
@@ -75,6 +267,26 @@ export const GetProject = gql`
       state
       jwtSecret
       uri
+      serviceClients {
+        name
+        clientId
+        scopes
+        profile
+        role
+        state
+        createdAt
+        keys {
+          name
+          kid
+          kty
+          alg
+          use
+          publicJwk
+          publicKeyFingerprint
+          state
+          createdAt
+        }
+      }
     }
     subscription {
       status
@@ -177,6 +389,70 @@ export const QueryProjects = gql`
   }
 }
     `;
+export const RevokeServiceClient = gql`
+    mutation RevokeServiceClient($id: ID!, $clientId: String!) {
+  revokeServiceClient(id: $id, clientId: $clientId) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}
+    `;
+export const RevokeServiceClientKey = gql`
+    mutation RevokeServiceClientKey($id: ID!, $clientId: String!, $kid: String!) {
+  revokeServiceClientKey(id: $id, clientId: $clientId, kid: $kid) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}
+    `;
 export const UpdateProject = gql`
     mutation UpdateProject($project: ProjectUpdateInput!) {
   updateProject(project: $project) {
@@ -209,6 +485,38 @@ export const UpdateProjectSubscription = gql`
     subscription {
       identifier
       status
+    }
+  }
+}
+    `;
+export const UpdateServiceClient = gql`
+    mutation UpdateServiceClient($id: ID!, $clientId: String!, $input: ServiceClientUpdateInput!) {
+  updateServiceClient(id: $id, clientId: $clientId, input: $input) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
     }
   }
 }

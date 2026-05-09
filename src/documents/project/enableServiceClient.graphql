@@ -1,0 +1,30 @@
+mutation EnableServiceClient($id: ID!, $clientId: String!) {
+  enableServiceClient(id: $id, clientId: $clientId) {
+    id
+    name
+    type
+    state
+    jwtSecret
+    uri
+    serviceClients {
+      name
+      clientId
+      scopes
+      profile
+      role
+      state
+      createdAt
+      keys {
+        name
+        kid
+        kty
+        alg
+        use
+        publicJwk
+        publicKeyFingerprint
+        state
+        createdAt
+      }
+    }
+  }
+}
