@@ -32,7 +32,6 @@ query GetProject($id: ID!) {
         name
         clientId
         scopes
-        profile
         role
         state
         createdAt

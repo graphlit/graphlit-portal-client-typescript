@@ -10,7 +10,6 @@ mutation CreateServiceClient($id: ID!, $input: ServiceClientInput!) {
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt

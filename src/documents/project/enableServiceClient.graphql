@@ -10,7 +10,6 @@ mutation EnableServiceClient($id: ID!, $clientId: String!) {
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt

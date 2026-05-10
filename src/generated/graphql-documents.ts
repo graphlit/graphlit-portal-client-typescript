@@ -24,7 +24,6 @@ export const AddServiceClientKey = gql`
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt
@@ -80,7 +79,6 @@ export const CreateServiceClient = gql`
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt
@@ -121,7 +119,6 @@ export const DisableServiceClient = gql`
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt
@@ -153,7 +150,6 @@ export const DisableServiceClientKey = gql`
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt
@@ -185,7 +181,6 @@ export const EnableServiceClient = gql`
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt
@@ -217,7 +212,6 @@ export const EnableServiceClientKey = gql`
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt
@@ -271,7 +265,6 @@ export const GetProject = gql`
         name
         clientId
         scopes
-        profile
         role
         state
         createdAt
@@ -402,7 +395,6 @@ export const RevokeServiceClient = gql`
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt
@@ -434,7 +426,6 @@ export const RevokeServiceClientKey = gql`
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt
@@ -502,7 +493,6 @@ export const UpdateServiceClient = gql`
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt

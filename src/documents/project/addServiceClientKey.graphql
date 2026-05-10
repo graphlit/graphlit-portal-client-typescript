@@ -10,7 +10,6 @@ mutation AddServiceClientKey($id: ID!, $clientId: String!, $key: ServiceClientKe
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt

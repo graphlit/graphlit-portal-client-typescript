@@ -10,7 +10,6 @@ mutation RevokeServiceClientKey($id: ID!, $clientId: String!, $kid: String!) {
       name
       clientId
       scopes
-      profile
       role
       state
       createdAt
