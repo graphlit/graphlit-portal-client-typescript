@@ -1179,8 +1179,6 @@ export type ServiceClient = {
   keys?: Maybe<Array<ServiceClientKey>>;
   /** The name of the service client. */
   name: Scalars['String']['output'];
-  /** The service client profile. */
-  profile?: Maybe<ServiceClientProfileTypes>;
   /** The role assigned to service client tokens. */
   role?: Maybe<RoleTypes>;
   /** The authorized service client scopes. */
@@ -1195,8 +1193,6 @@ export type ServiceClientInput = {
   keys: Array<ServiceClientKeyInput>;
   /** The name of the service client. */
   name: Scalars['String']['input'];
-  /** The service client profile. */
-  profile?: InputMaybe<ServiceClientProfileTypes>;
   /** The role assigned to service client tokens. */
   role?: InputMaybe<RoleTypes>;
   /** The authorized service client scopes. */
@@ -1244,18 +1240,6 @@ export enum ServiceClientKeyStateTypes {
   Revoked = 'REVOKED'
 }
 
-/** Service client profile type */
-export enum ServiceClientProfileTypes {
-  /** Full */
-  Full = 'FULL',
-  /** Memory */
-  Memory = 'MEMORY',
-  /** Retrieval */
-  Retrieval = 'RETRIEVAL',
-  /** Standard */
-  Standard = 'STANDARD'
-}
-
 /** Service client scope type */
 export enum ServiceClientScopeTypes {
   /** Read */
@@ -1278,8 +1262,6 @@ export enum ServiceClientStateTypes {
 export type ServiceClientUpdateInput = {
   /** The name of the service client. */
   name?: InputMaybe<Scalars['String']['input']>;
-  /** The service client profile. */
-  profile?: InputMaybe<ServiceClientProfileTypes>;
   /** The role assigned to service client tokens. */
   role?: InputMaybe<RoleTypes>;
   /** The authorized service client scopes. */
